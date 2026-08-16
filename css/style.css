@@ -1884,3 +1884,71 @@ body {
     }
 
 }
+
+/* ========================================
+   PORTADA — AJUSTES PARA MÓVIL
+   ======================================== */
+
+@media (max-width: 600px) {
+
+    /* Corazón entre Juanjo e Irene */
+    .nombres .corazon-svg {
+        width: 38px;
+        height: auto;
+        transform: translateX(-10px);
+    }
+
+
+    /* Flores de las esquinas */
+    .portada .decoracion-svg {
+        width: 75px;
+        height: 75px;
+    }
+
+}
+
+/* ========================================
+   PORTADA — AJUSTES PARA MÓVIL
+   ======================================== */
+
+@media (max-width: 600px) {
+
+    /* Corazón entre Juanjo e Irene */
+    .nombres .corazon-svg {
+        width: 38px;
+        height: auto;
+        transform: translateX(-10px);
+    }
+
+
+    /* Flores */
+    .portada .decoracion-svg {
+        width: 75px;
+        height: 75px;
+    }
+
+
+    /* Flores superiores */
+    .decoracion-superior-izquierda {
+        top: 10px;
+        left: 5px;
+    }
+
+    .decoracion-superior-derecha {
+        top: 10px;
+        right: 5px;
+    }
+
+
+    /* Flores inferiores */
+    .decoracion-inferior-izquierda {
+        bottom: 10px;
+        left: 5px;
+    }
+
+    .decoracion-inferior-derecha {
+        bottom: 10px;
+        right: 5px;
+    }
+
+}
