@@ -1863,3 +1863,24 @@ body {
 
     opacity: 0.65;
 }
+
+/* ========================================
+   AJUSTES PARA MÓVIL — PORTADA
+   ======================================== */
+
+@media (max-width: 600px) {
+
+    /* Corazón entre Juanjo e Irene */
+    .corazon-svg {
+        width: 45px;
+        height: 41px;
+    }
+
+
+    /* Flores de las esquinas */
+    .decoracion-svg {
+        width: 70px;
+        height: 70px;
+    }
+
+}
