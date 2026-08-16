@@ -1,0 +1,1394 @@
+const SUPABASE_URL = "https://kxtxensyeyanlyzlavaw.supabase.co";
+
+const SUPABASE_KEY = "sb_publishable_6GZMdoRADrGy1eWAZ1y8Uw_MZysDEcN";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+async function cargarInvitados() {
+
+    const { data, error } = await supabaseClient
+        .from("invitados")
+        .select("id, nombre, seleccionado_por, seleccionado_en")
+        .order("id");
+
+    if (error) {
+        console.error("Error cargando invitados:", error);
+        return;
+    }
+
+    const opciones =
+        document.getElementById("selector-invitados-opciones");
+
+    const texto =
+        document.getElementById("selector-invitados-texto");
+
+    opciones.innerHTML = "";
+
+    data.forEach(invitado => {
+
+        const elemento = document.createElement("button");
+
+        elemento.type = "button";
+
+        elemento.className = "opcion-invitado";
+
+        elemento.textContent = invitado.nombre;
+
+
+        /* ========================================
+           ESTADO DEL INVITADO
+           ======================================== */
+
+        if (invitado.seleccionado_por === navegadorId) {
+
+            elemento.classList.add("seleccionado");
+
+            texto.textContent = invitado.nombre;
+
+        } else if (
+            invitado.seleccionado_por !== null
+        ) {
+
+            elemento.classList.add("ocupado");
+
+            elemento.disabled = true;
+
+        }
+
+
+        /* ========================================
+           CLICK
+           ======================================== */
+
+        elemento.addEventListener("click", async () => {
+
+            await seleccionarInvitado(
+                invitado,
+                elemento
+            );
+
+            await cargarInvitados();
+
+        });
+
+
+        opciones.appendChild(elemento);
+
+    });
+}
+
+const selectorBoton =
+    document.getElementById("selector-invitados-boton");
+
+const selectorOpciones =
+    document.getElementById("selector-invitados-opciones");
+
+
+selectorBoton.addEventListener("click", () => {
+
+    const abierto =
+        selectorOpciones.classList.toggle("abierto");
+
+    selectorBoton.classList.toggle(
+        "abierto",
+        abierto
+    );
+
+});
+
+
+/* Cerrar al pulsar fuera */
+
+document.addEventListener("click", evento => {
+
+    if (
+        !evento.target.closest(".selector-invitados")
+    ) {
+
+        selectorOpciones.classList.remove("abierto");
+
+        selectorBoton.classList.remove("abierto");
+
+    }
+
+});
+
+/* ========================================
+   IDENTIFICADOR DEL NAVEGADOR
+   ======================================== */
+
+let navegadorId = localStorage.getItem("navegador_id");
+
+if (!navegadorId) {
+
+    navegadorId = crypto.randomUUID();
+
+    localStorage.setItem(
+        "navegador_id",
+        navegadorId
+    );
+}
+
+cargarInvitados();
+
+/* ========================================
+   SELECCIÓN DE INVITADO
+   ======================================== */
+
+async function seleccionarInvitado(invitado, elemento) {
+
+    /* Si ya es nuestro, lo liberamos */
+
+    if (invitado.seleccionado_por === navegadorId) {
+
+        const { data, error } = await supabaseClient
+            .rpc("liberar_invitado", {
+                invitado_id: invitado.id,
+                navegador_id: navegadorId
+            });
+
+        if (error) {
+            console.error("Error al liberar invitado:", error);
+            return;
+        }
+
+        if (data === true) {
+
+            invitado.seleccionado_por = null;
+            invitado.seleccionado_en = null;
+
+            elemento.classList.remove("seleccionado");
+        }
+
+        return;
+    }
+
+
+    /* Si pertenece a otra persona, no hacemos nada */
+
+    if (
+        invitado.seleccionado_por !== null &&
+        invitado.seleccionado_por !== navegadorId
+    ) {
+
+        return;
+    }
+
+
+    /* Intentamos reservarlo */
+
+    const { data, error } = await supabaseClient
+        .rpc("cambiar_invitado", {
+            nuevo_invitado_id: invitado.id,
+            navegador_id: navegadorId
+        });
+
+    if (error) {
+        console.error("Error al reservar invitado:", error);
+        return;
+    }
+
+
+    /* Supabase nos dice si lo hemos conseguido */
+
+    if (data === true) {
+
+        /* Primero quitamos nuestra selección anterior */
+
+        document
+            .querySelectorAll(".invitado.seleccionado")
+            .forEach(elementoAnterior => {
+
+                elementoAnterior.classList.remove("seleccionado");
+
+            });
+
+
+        /* Marcamos el nuevo */
+
+        elemento.classList.add("seleccionado");
+
+
+        /* Actualizamos los datos locales */
+
+        invitado.seleccionado_por = navegadorId;
+        invitado.seleccionado_en = new Date().toISOString();
+
+    } else {
+
+        /* Alguien lo ha reservado antes que nosotros */
+
+        elemento.classList.remove("seleccionado");
+
+        alert("Este nombre ya ha sido seleccionado por otra persona.");
+    }
+}
+
+/* ========================================
+   CUENTA ATRÁS
+   ======================================== */
+
+const fechaEvento = new Date("2027-04-30T19:30:00");
+
+function actualizarCuentaAtras() {
+
+    const ahora = new Date();
+
+    const diferencia = fechaEvento - ahora;
+
+    const texto = document.getElementById("texto-cuenta-atras");
+
+
+    /* ========================================
+        DESPUÉS DEL EVENTO
+        ======================================== */
+
+        const diaSiguienteAlEvento = new Date("2027-05-01T00:00:00");
+
+            if (ahora >= diaSiguienteAlEvento) {
+
+                document.getElementById("dias").textContent = "00";
+                document.getElementById("horas").textContent = "00";
+                document.getElementById("minutos").textContent = "00";
+                document.getElementById("segundos").textContent = "00";
+
+                texto.textContent =
+                    "¿Reviviendo recuerdos?";
+
+                return;
+            }
+
+
+    /* ========================================
+       CÁLCULO DEL TIEMPO
+       ======================================== */
+
+        const dias = Math.floor(
+            diferencia / (1000 * 60 * 60 * 24)
+        );
+
+        const horas = Math.floor(
+            (diferencia / (1000 * 60 * 60)) % 24
+        );
+
+        const minutos = Math.floor(
+            (diferencia / (1000 * 60)) % 60
+        );
+
+        const segundos = Math.floor(
+            (diferencia / 1000) % 60
+        );
+
+
+    /* ========================================
+       MOSTRAR EL TIEMPO
+       ======================================== */
+
+        document.getElementById("dias").textContent =
+            String(dias).padStart(2, "0");
+
+        document.getElementById("horas").textContent =
+            String(horas).padStart(2, "0");
+
+        document.getElementById("minutos").textContent =
+            String(minutos).padStart(2, "0");
+
+        document.getElementById("segundos").textContent =
+            String(segundos).padStart(2, "0");
+
+
+    /* ========================================
+       TEXTO DEL DÍA DEL EVENTO
+       ======================================== */
+
+        if (dias === 0) {
+
+            texto.textContent =
+                "¿Qué haces mirando la web? ¡Mira la boda!";
+
+            return;
+        }
+
+
+    /* ========================================
+       TEXTOS DE LA CUENTA ATRÁS
+       ======================================== */
+
+    if (dias === 1) {
+
+        texto.textContent =
+            "Mañana es el gran día.";
+
+    } else if (dias === 2) {
+
+        texto.textContent =
+            "Solo quedan 2 días.";
+
+    } else if (dias === 3) {
+
+        texto.textContent =
+            "3 días para los 10 años.";
+
+    } else if (dias === 4) {
+
+        texto.textContent =
+            "4 días. Ya queda muy poquito.";
+
+    } else if (dias === 5) {
+
+        texto.textContent =
+            "5 días para volver a celebrar su historia.";
+
+    } else if (dias === 6) {
+
+        texto.textContent =
+            "6 días. La cuenta atrás ya va en serio.";
+
+    } else if (dias === 7) {
+
+        texto.textContent =
+            "Una semana para volver a decir \"sí, quiero\".";
+
+    } else if (dias === 8) {
+
+        texto.textContent =
+            "8 días. Ya huele a celebración.";
+
+    } else if (dias === 9) {
+
+        texto.textContent =
+            "9 días para volver a celebrar 10 años juntos.";
+
+    } else if (dias === 10) {
+
+        texto.textContent =
+            "Diez días para los 10 años.";
+
+    } else if (dias === 11) {
+
+        texto.textContent =
+            "11 días. Ya casi podemos contarlos con las manos.";
+
+    } else if (dias === 12) {
+
+        texto.textContent =
+            "12 días para volver a decir \"sí, quiero\".";
+
+    } else if (dias === 13) {
+
+        texto.textContent =
+            "Ya solo quedan 13 días...";
+
+    } else if (dias === 14) {
+
+        texto.textContent =
+            "Dos semanas para volver a celebrar su historia.";
+
+    } else if (dias <= 30) {
+
+        texto.textContent =
+            `${dias} días para volver a celebrar una historia de 10 años.`;
+
+    } else if (dias <= 60) {
+
+        texto.textContent =
+            "Ya empieza la cuenta atrás para sus 10 años.";
+
+    } else if (dias <= 100) {
+
+        texto.textContent =
+            "Cada vez queda menos para volver a celebrar su historia.";
+
+    } else if (dias <= 200) {
+
+        texto.textContent =
+            "El gran día empieza a acercarse...";
+
+    } else {
+
+        texto.textContent =
+            "Una historia que merece volver a celebrarse.";
+    }
+}
+
+
+/* ========================================
+   INICIAR CUENTA ATRÁS
+   ======================================== */
+
+actualizarCuentaAtras();
+
+setInterval(actualizarCuentaAtras, 1000);
+
+/* ========================================
+   ACTUALIZACIÓN EN TIEMPO REAL
+   ======================================== */
+
+supabaseClient
+    .channel("cambios-invitados")
+    .on(
+        "postgres_changes",
+        {
+            event: "*",
+            schema: "public",
+            table: "invitados"
+        },
+        () => {
+            cargarInvitados();
+        }
+    )
+    .subscribe();
+
+    /* ========================================
+   RECUERDOS / GALERÍA DE FOTOS
+   ======================================== */
+
+const botonVerFotos =
+    document.getElementById("boton-ver-fotos");
+
+const galeriaFotos =
+    document.getElementById("galeria-fotos");
+
+const visorFotos =
+    document.getElementById("visor-fotos");
+
+const visorImagen =
+    document.getElementById("visor-imagen");
+
+const visorAutor =
+    document.getElementById("visor-autor");
+
+const visorCerrar =
+    document.getElementById("visor-cerrar");
+
+const visorAnterior =
+    document.getElementById("visor-anterior");
+
+const visorSiguiente =
+    document.getElementById("visor-siguiente");
+
+let fotosCargadas = [];
+
+let fotoActual = 0;
+
+/* ========================================
+   CARGAR FOTOS
+   ======================================== */
+
+async function cargarFotos() {
+
+    const { data, error } = await supabaseClient
+        .from("fotos")
+        .select("id, nombre_archivo, url, subido_por, subido_en")
+        .order("subido_en", { ascending: false });
+
+    if (error) {
+
+        console.error(
+            "Error cargando fotos:",
+            error
+        );
+
+        return;
+    }
+
+
+    /* Guardamos las fotos para poder navegar por ellas */
+
+    fotosCargadas = data;
+
+
+    galeriaFotos.innerHTML = "";
+
+
+    data.forEach((foto, indice) => {
+
+        const imagen =
+            document.createElement("img");
+
+        imagen.src = foto.url;
+
+        imagen.alt =
+            "Foto compartida por " +
+            (foto.subido_por || "un invitado");
+
+        imagen.loading = "lazy";
+
+
+        /* ========================================
+           ABRIR VISOR
+           ======================================== */
+
+        imagen.addEventListener("click", () => {
+
+            abrirVisor(indice);
+
+        });
+
+
+        galeriaFotos.appendChild(imagen);
+
+    });
+}
+
+
+/* ========================================
+   ABRIR / CERRAR GALERÍA
+   ======================================== */
+
+botonVerFotos.addEventListener("click", async () => {
+
+    const abierta =
+        galeriaFotos.classList.toggle("abierta");
+
+
+    if (abierta) {
+
+        await cargarFotos();
+
+        botonVerFotos.innerHTML =
+            'Ocultar fotos <span>⌃</span>';
+
+    } else {
+
+        botonVerFotos.innerHTML =
+            'Ver fotos <span>⌄</span>';
+
+    }
+
+});
+
+
+/* ========================================
+   CARGA INICIAL
+   ======================================== */
+
+cargarFotos();
+
+/* ========================================
+   SUBIR FOTOS
+   ======================================== */
+
+const botonSubirFoto =
+    document.getElementById("boton-subir-foto");
+
+const inputFoto =
+    document.getElementById("input-foto");
+
+
+/* Abrir selector de archivos */
+
+botonSubirFoto.addEventListener("click", () => {
+
+    inputFoto.click();
+
+});
+
+
+/* ========================================
+   PROCESAR FOTO SELECCIONADA
+   ======================================== */
+
+inputFoto.addEventListener("change", async () => {
+
+    const archivos = Array.from(inputFoto.files);
+
+    if (!archivos.length) {
+        return;
+    }
+
+
+    /* ========================================
+       BUSCAR EL INVITADO
+       ======================================== */
+
+    const { data: invitado, error: errorInvitado } =
+        await supabaseClient
+            .from("invitados")
+            .select("id, nombre")
+            .eq("seleccionado_por", navegadorId)
+            .maybeSingle();
+
+
+    if (errorInvitado) {
+
+        console.error(
+            "Error buscando el invitado:",
+            errorInvitado
+        );
+
+        alert("No se ha podido comprobar tu invitado.");
+
+        inputFoto.value = "";
+
+        return;
+    }
+
+
+    /* ========================================
+       COMPROBAR QUE HAYA SELECCIONADO UN NOMBRE
+       ======================================== */
+
+    if (!invitado) {
+
+        alert(
+            "Primero selecciona tu nombre antes de subir fotos."
+        );
+
+        inputFoto.value = "";
+
+        return;
+    }
+
+
+    /* ========================================
+       COMPROBAR TODAS LAS FOTOS
+       ======================================== */
+
+    const limite =
+        10 * 1024 * 1024;
+
+    for (const archivo of archivos) {
+
+        if (!archivo.type.startsWith("image/")) {
+
+            alert(
+                `"${archivo.name}" no es una imagen.`
+            );
+
+            inputFoto.value = "";
+
+            return;
+        }
+
+
+        if (archivo.size > limite) {
+
+            alert(
+                `"${archivo.name}" supera el límite de 10 MB.`
+            );
+
+            inputFoto.value = "";
+
+            return;
+        }
+
+    }
+
+
+    /* ========================================
+       SUBIR LAS FOTOS
+       ======================================== */
+
+    let fotosSubidas = 0;
+
+
+    for (const archivo of archivos) {
+
+        const extension =
+            archivo.name.includes(".")
+                ? archivo.name.substring(
+                    archivo.name.lastIndexOf(".")
+                )
+                : "";
+
+
+        const nombreArchivo =
+            `${crypto.randomUUID()}${extension}`;
+
+
+        /* ========================================
+           STORAGE
+           ======================================== */
+
+        const { error: errorSubida } =
+            await supabaseClient
+                .storage
+                .from("fotos")
+                .upload(
+                    nombreArchivo,
+                    archivo,
+                    {
+                        cacheControl: "3600",
+                        upsert: false
+                    }
+                );
+
+
+        if (errorSubida) {
+
+            console.error(
+                "Error subiendo la foto:",
+                errorSubida
+            );
+
+            alert(
+                `No se ha podido subir "${archivo.name}".`
+            );
+
+            continue;
+        }
+
+
+        /* ========================================
+           URL PÚBLICA
+           ======================================== */
+
+        const { data: urlData } =
+            supabaseClient
+                .storage
+                .from("fotos")
+                .getPublicUrl(
+                    nombreArchivo
+                );
+
+
+        const url =
+            urlData.publicUrl;
+
+
+        /* ========================================
+           GUARDAR EN LA TABLA
+           ======================================== */
+
+        const { error: errorRegistro } =
+            await supabaseClient
+                .from("fotos")
+                .insert({
+                    nombre_archivo: nombreArchivo,
+                    url: url,
+                    subido_por: invitado.nombre
+                });
+
+
+        /* ========================================
+           SI FALLA EL REGISTRO
+           ======================================== */
+
+        if (errorRegistro) {
+
+            console.error(
+                "Error guardando la información:",
+                errorRegistro
+            );
+
+
+            await supabaseClient
+                .storage
+                .from("fotos")
+                .remove([
+                    nombreArchivo
+                ]);
+
+
+            console.error(
+                `No se pudo registrar "${archivo.name}".`
+            );
+
+            continue;
+        }
+
+
+        fotosSubidas++;
+
+    }
+
+
+    /* ========================================
+       RESULTADO
+       ======================================== */
+
+    if (fotosSubidas === archivos.length) {
+
+        alert(
+            fotosSubidas === 1
+                ? "¡Foto subida correctamente! ❤️"
+                : `¡${fotosSubidas} fotos subidas correctamente! ❤️`
+        );
+
+    } else if (fotosSubidas > 0) {
+
+        alert(
+            `Se han subido ${fotosSubidas} de ${archivos.length} fotos.`
+        );
+
+    } else {
+
+        alert(
+            "No se ha podido subir ninguna foto."
+        );
+
+    }
+
+
+    inputFoto.value = "";
+
+
+    /* ========================================
+       RECARGAR GALERÍA
+       ======================================== */
+
+    await cargarFotos();
+
+});
+
+    /* ========================================
+   ABRIR VISOR
+   ======================================== */
+
+function abrirVisor(indice) {
+
+    if (!fotosCargadas.length) {
+        return;
+    }
+
+    fotoActual = indice;
+
+    mostrarFotoActual();
+
+    visorFotos.classList.add("abierto");
+
+    visorFotos.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+}
+
+
+/* ========================================
+   MOSTRAR FOTO ACTUAL
+   ======================================== */
+
+function mostrarFotoActual() {
+
+    const foto =
+        fotosCargadas[fotoActual];
+
+    if (!foto) {
+        return;
+    }
+
+
+    visorImagen.src = foto.url;
+
+    visorImagen.alt =
+        "Foto compartida por " +
+        (foto.subido_por || "un invitado");
+
+
+    if (foto.subido_por) {
+
+        visorAutor.textContent =
+            "Compartida por " + foto.subido_por;
+
+    } else {
+
+        visorAutor.textContent = "";
+
+    }
+
+}
+
+
+/* ========================================
+   FOTO ANTERIOR
+   ======================================== */
+
+function mostrarFotoAnterior() {
+
+    if (!fotosCargadas.length) {
+        return;
+    }
+
+    fotoActual--;
+
+    if (fotoActual < 0) {
+
+        fotoActual =
+            fotosCargadas.length - 1;
+
+    }
+
+    mostrarFotoActual();
+
+}
+
+
+/* ========================================
+   FOTO SIGUIENTE
+   ======================================== */
+
+function mostrarFotoSiguiente() {
+
+    if (!fotosCargadas.length) {
+        return;
+    }
+
+    fotoActual++;
+
+    if (
+        fotoActual >=
+        fotosCargadas.length
+    ) {
+
+        fotoActual = 0;
+
+    }
+
+    mostrarFotoActual();
+
+}
+
+
+/* ========================================
+   CERRAR VISOR
+   ======================================== */
+
+function cerrarVisor() {
+
+    visorFotos.classList.remove("abierto");
+
+    visorFotos.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    visorImagen.src = "";
+
+}
+
+
+/* ========================================
+   BOTONES
+   ======================================== */
+
+visorCerrar.addEventListener(
+    "click",
+    cerrarVisor
+);
+
+
+visorAnterior.addEventListener(
+    "click",
+    mostrarFotoAnterior
+);
+
+
+visorSiguiente.addEventListener(
+    "click",
+    mostrarFotoSiguiente
+);
+
+/* ========================================
+   DESLIZAR EN MÓVIL
+   ======================================== */
+
+let inicioToqueX = 0;
+let inicioToqueY = 0;
+
+visorFotos.addEventListener("touchstart", evento => {
+
+    if (!visorFotos.classList.contains("abierto")) {
+        return;
+    }
+
+    inicioToqueX = evento.changedTouches[0].screenX;
+    inicioToqueY = evento.changedTouches[0].screenY;
+
+}, { passive: true });
+
+
+visorFotos.addEventListener("touchend", evento => {
+
+    if (!visorFotos.classList.contains("abierto")) {
+        return;
+    }
+
+    const finalToqueX =
+        evento.changedTouches[0].screenX;
+
+    const finalToqueY =
+        evento.changedTouches[0].screenY;
+
+
+    const diferenciaX =
+        finalToqueX - inicioToqueX;
+
+    const diferenciaY =
+        finalToqueY - inicioToqueY;
+
+
+    /* Evitamos que un movimiento vertical
+       se interprete como un cambio de foto */
+
+    if (
+        Math.abs(diferenciaX) <
+        Math.abs(diferenciaY)
+    ) {
+        return;
+    }
+
+
+    /* Necesitamos al menos 50px de desplazamiento */
+
+    if (Math.abs(diferenciaX) < 50) {
+        return;
+    }
+
+
+    /* Deslizar hacia la izquierda → siguiente */
+
+    if (diferenciaX < 0) {
+
+        mostrarFotoSiguiente();
+
+    }
+
+
+    /* Deslizar hacia la derecha → anterior */
+
+    else {
+
+        mostrarFotoAnterior();
+
+    }
+
+}, { passive: true });
+
+/* ========================================
+   RECOMENDACIONES
+   ======================================== */
+
+const inputCancion =
+    document.getElementById("input-cancion");
+
+const botonEnviarCancion =
+    document.getElementById("boton-enviar-cancion");
+
+const inputGeneral =
+    document.getElementById("input-general");
+
+const botonEnviarGeneral =
+    document.getElementById("boton-enviar-general");
+
+
+/* ========================================
+   ENVIAR RECOMENDACIÓN
+   ======================================== */
+
+async function enviarRecomendacion(tipo, input, boton) {
+
+    const texto = input.value.trim();
+
+    /* No permitir enviar vacío */
+
+    if (!texto) {
+
+        alert("Escribe una recomendación antes de enviarla.");
+
+        input.focus();
+
+        return;
+    }
+
+
+    /* ========================================
+       BUSCAR AL INVITADO
+       ======================================== */
+
+    const { data: invitado, error: errorInvitado } =
+        await supabaseClient
+            .from("invitados")
+            .select("id, nombre")
+            .eq("seleccionado_por", navegadorId)
+            .maybeSingle();
+
+
+    if (errorInvitado) {
+
+        console.error(
+            "Error buscando el invitado:",
+            errorInvitado
+        );
+
+        alert(
+            "No se ha podido comprobar quién eres."
+        );
+
+        return;
+    }
+
+
+    /* ========================================
+       COMPROBAR QUE HAYA SELECCIONADO NOMBRE
+       ======================================== */
+
+    if (!invitado) {
+
+        alert(
+            "Primero selecciona tu nombre antes de enviar una recomendación."
+        );
+
+        return;
+    }
+
+
+    /* ========================================
+       GUARDAR EN SUPABASE
+       ======================================== */
+
+    boton.disabled = true;
+
+    boton.textContent = "Enviando...";
+
+
+    const { error } =
+        await supabaseClient
+            .from("recomendaciones")
+            .insert({
+                tipo: tipo,
+                texto: texto,
+                enviado_por: invitado.nombre
+            });
+
+
+    /* ========================================
+       ERROR
+       ======================================== */
+
+    if (error) {
+
+        console.error(
+            "Error guardando recomendación:",
+            error
+        );
+
+        alert(
+            "No se ha podido enviar la recomendación."
+        );
+
+        boton.disabled = false;
+
+        boton.textContent = "Enviar";
+
+        return;
+    }
+
+
+    /* ========================================
+       TODO CORRECTO
+       ======================================== */
+
+    input.value = "";
+
+    boton.disabled = false;
+
+    boton.textContent = "Enviar";
+
+
+    alert(
+        "¡Recomendación enviada! ❤️"
+    );
+}
+
+
+/* ========================================
+   BOTÓN — CANCIONES
+   ======================================== */
+
+botonEnviarCancion.addEventListener(
+    "click",
+    () => {
+
+        enviarRecomendacion(
+            "cancion",
+            inputCancion,
+            botonEnviarCancion
+        );
+
+    }
+);
+
+
+/* ========================================
+   BOTÓN — RECOMENDACIONES GENERALES
+   ======================================== */
+
+botonEnviarGeneral.addEventListener(
+    "click",
+    () => {
+
+        enviarRecomendacion(
+            "general",
+            inputGeneral,
+            botonEnviarGeneral
+        );
+
+    }
+);
+
+/* ========================================
+   MENÚ LATERAL
+   ======================================== */
+
+const botonMenu =
+    document.getElementById("boton-menu");
+
+const menuLateral =
+    document.getElementById("menu-lateral");
+
+const menuFondo =
+    document.getElementById("menu-fondo");
+
+
+/* ========================================
+   ABRIR / CERRAR MENÚ
+   ======================================== */
+
+function abrirMenu() {
+
+    menuLateral.classList.add("abierto");
+    menuFondo.classList.add("abierto");
+
+    botonMenu.classList.add("abierto");
+
+    botonMenu.setAttribute(
+        "aria-expanded",
+        "true"
+    );
+
+    menuLateral.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+}
+
+
+function cerrarMenu() {
+
+    menuLateral.classList.remove("abierto");
+    menuFondo.classList.remove("abierto");
+
+    botonMenu.classList.remove("abierto");
+
+    botonMenu.setAttribute(
+        "aria-expanded",
+        "false"
+    );
+
+    menuLateral.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+}
+
+
+/* ========================================
+   BOTÓN
+   ======================================== */
+
+botonMenu.addEventListener(
+    "click",
+    () => {
+
+        if (
+            menuLateral.classList.contains("abierto")
+        ) {
+
+            cerrarMenu();
+
+        } else {
+
+            abrirMenu();
+
+        }
+
+    }
+);
+
+
+/* ========================================
+   CERRAR AL PULSAR EL FONDO
+   ======================================== */
+
+menuFondo.addEventListener(
+    "click",
+    cerrarMenu
+);
+
+/* ========================================
+   NAVEGACIÓN DEL MENÚ
+   ======================================== */
+
+const opcionesMenu =
+    document.querySelectorAll(
+        ".menu-navegacion button"
+    );
+
+const vistas =
+    document.querySelectorAll(".vista");
+
+
+opcionesMenu.forEach(opcion => {
+
+    opcion.addEventListener("click", () => {
+
+        const nombreVista =
+            opcion.dataset.vista;
+
+        const vistaObjetivo =
+            document.getElementById(
+                `vista-${nombreVista}`
+            );
+
+        if (!vistaObjetivo) {
+
+            console.error(
+                "No se encontró la vista:",
+                nombreVista
+            );
+
+            return;
+        }
+
+
+        /* ========================================
+           OCULTAR TODAS LAS VISTAS
+           ======================================== */
+
+        vistas.forEach(vista => {
+
+            vista.classList.remove("activa");
+
+        });
+
+
+        /* ========================================
+           MOSTRAR LA VISTA ELEGIDA
+           ======================================== */
+
+        vistaObjetivo.classList.add("activa");
+
+
+        /* ========================================
+           CERRAR EL MENÚ
+           ======================================== */
+
+        cerrarMenu();
+
+        /* Volver arriba */
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    });
+
+});

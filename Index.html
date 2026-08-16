@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Juanjo & Irene — Renovación de votos</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Allura&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+        <!-- ========================================
+        BOTÓN DEL MENÚ
+        ======================================== -->
+
+    <button
+        type="button"
+        id="boton-menu"
+        class="boton-menu"
+        aria-label="Abrir menú"
+        aria-expanded="false"
+    >
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+        <!-- ========================================
+        MENÚ LATERAL
+        ======================================== -->
+
+    <aside
+        id="menu-lateral"
+        class="menu-lateral"
+        aria-hidden="true"
+    >
+
+        <div class="menu-cabecera">
+
+            <p class="menu-etiqueta">
+                JUANJO & IRENE
+            </p>
+
+            <p class="menu-subtitulo">
+                Renovación de votos
+            </p>
+
+        </div>
+
+
+        <nav class="menu-navegacion">
+
+            <button type="button" data-vista="inicio">
+                <span class="menu-icono">♡</span>
+                <span>INICIO</span>
+            </button>
+
+            <button type="button" data-vista="confirmacion">
+                <span class="menu-icono">♥</span>
+                <span>CONFIRMA TU ASISTENCIA</span>
+            </button>
+
+            <button type="button" data-vista="menu">
+                <span class="menu-icono">♧</span>
+                <span>EL MENÚ</span>
+            </button>
+
+            <button type="button" data-vista="recuerdos">
+                <span class="menu-icono">❦</span>
+                <span>RECUERDOS</span>
+            </button>
+
+            <button type="button" data-vista="musica">
+                <span class="menu-icono">♪</span>
+                <span>MÚSICA</span>
+            </button>
+
+            <button type="button" data-vista="recomendaciones">
+                <span class="menu-icono">✦</span>
+                <span>RECOMENDACIONES</span>
+            </button>
+
+            <button type="button" data-vista="historia">
+                <span class="menu-icono">♡</span>
+                <span>NUESTRA HISTORIA</span>
+            </button>
+
+        </nav>
+
+        <div class="menu-autor">
+            Made by Iván J.
+        </div>
+
+    </aside>
+
+
+    <div
+        id="menu-fondo"
+        class="menu-fondo"
+        aria-hidden="true"
+    ></div>
+
+    <main>
+
+        <div id="vista-inicio" class="vista activa">
+
+            <!-- DEFINICIÓN DEL ORNAMENTO -->
+            <svg class="definiciones-svg" aria-hidden="true">
+                <defs>
+
+                    <g id="ornamento-floral">
+
+                        <!-- Rama principal -->
+                        <path
+                            d="M8 92
+                            C18 72, 28 55, 45 42
+                            C58 32, 72 24, 92 8"
+                        />
+
+                        <!-- Curva superior -->
+                        <path
+                            d="M42 45
+                            C35 32, 38 20, 52 15
+                            C64 11, 72 18, 67 28
+                            C63 35, 53 37, 48 31"
+                        />
+
+                        <!-- Curva inferior -->
+                        <path
+                            d="M24 70
+                            C10 64, 8 52, 18 46
+                            C27 41, 36 47, 33 56
+                            C31 62, 24 64, 20 59"
+                        />
+
+                        <!-- Hoja superior -->
+                        <path
+                            d="M62 30
+                            C67 18, 78 13, 86 17
+                            C82 28, 72 34, 62 30 Z"
+                        />
+
+                        <!-- Hoja central -->
+                        <path
+                            d="M42 48
+                            C48 38, 58 36, 65 40
+                            C61 50, 52 54, 42 48 Z"
+                        />
+
+                        <!-- Hoja inferior -->
+                        <path
+                            d="M24 69
+                            C32 61, 42 62, 47 68
+                            C40 76, 31 76, 24 69 Z"
+                        />
+
+                        <!-- Pequeños círculos decorativos -->
+                            <circle cx="92" cy="8" r="2.5" />
+                            <circle cx="8" cy="92" r="2.5" />
+
+                    </g>
+
+                </defs>
+            </svg>
+
+            <!-- PORTADA -->
+            <section class="portada">
+
+                <svg class="decoracion-svg decoracion-superior-izquierda"
+                    viewBox="0 0 100 100"
+                    aria-hidden="true">
+                    <use href="#ornamento-floral"></use>
+                </svg>
+
+                <svg class="decoracion-svg decoracion-superior-derecha"
+                    viewBox="0 0 100 100"
+                    aria-hidden="true">
+                    <use href="#ornamento-floral"></use>
+                </svg>
+
+                <p class="portada-subtitulo">
+                    Nos casamos de nuevo
+                </p>
+
+                <div class="nombres">
+                    <h1>Juanjo</h1>
+
+                    <div class="anillos">
+
+                        <svg class="corazon-svg"
+                            viewBox="0 0 100 90"
+                            aria-hidden="true">
+
+                            <path d="M50 82
+                                    L12 44
+                                    C-2 30, 5 8, 23 5
+                                    C36 3, 46 10, 50 21
+                                    C54 10, 64 3, 77 5
+                                    C95 8, 102 30, 88 44
+                                    Z" />
+
+                        </svg>
+
+                    </div>
+
+                    <h1>Irene</h1>
+                </div>
+
+                <p class="portada-frase">
+                    Sin miedo a vivir
+                </p>
+
+                <div class="separador">
+                    <span></span>
+                    <span>❦</span>
+                    <span></span>
+                </div>
+
+                <div class="fecha">
+
+                    <div class="fecha-dia">
+                        <span>VIERNES</span>
+                        <strong>30</strong>
+                    </div>
+
+                    <div class="fecha-mes">
+                        <span>ABRIL</span>
+                        <strong>2027</strong>
+                    </div>
+
+                    <div class="fecha-hora">
+                        <span>19:30</span>
+                    </div>
+
+                </div>
+
+                <p class="lugar">
+                    AZAHAR COSTA
+                </p>
+
+                <p class="mensaje">
+                    Contamos con vosotros,<br>
+                    sois parte importante de nuestra vida
+                </p>
+
+                <svg class="decoracion-svg decoracion-inferior-izquierda"
+                    viewBox="0 0 100 100"
+                    aria-hidden="true">
+                    <use href="#ornamento-floral"></use>
+                </svg>
+
+                <svg class="decoracion-svg decoracion-inferior-derecha"
+                    viewBox="0 0 100 100"
+                    aria-hidden="true">
+                    <use href="#ornamento-floral"></use>
+                </svg>
+
+            </section>
+            
+                    <!-- CUENTA ATRÁS -->
+            <section class="cuenta-atras">
+
+                <p class="seccion-etiqueta">
+                    LA CUENTA ATRÁS
+                </p>
+
+                <h2 id="texto-cuenta-atras">
+                    Falta poco para volver a celebrar su historia ❤️
+                </h2>
+
+                <div class="contador">
+
+                    <div class="contador-bloque">
+                        <strong id="dias">00</strong>
+                        <span>DÍAS</span>
+                    </div>
+
+                    <div class="contador-bloque">
+                        <strong id="horas">00</strong>
+                        <span>HORAS</span>
+                    </div>
+
+                    <div class="contador-bloque">
+                        <strong id="minutos">00</strong>
+                        <span>MINUTOS</span>
+                    </div>
+
+                    <div class="contador-bloque">
+                        <strong id="segundos">00</strong>
+                        <span>SEGUNDOS</span>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+        <div id="vista-confirmacion" class="vista">
+
+            <!-- ========================================
+                INVITADOS
+                ======================================== -->
+
+            <section class="invitados">
+
+                <p class="seccion-etiqueta">
+                    INVITADOS
+                </p>
+
+                <h2>
+                    ¿Quién eres?
+                </h2>
+
+                <p class="invitados-descripcion">
+                    Selecciona tu nombre para confirmar.
+                </p>
+
+                <div class="selector-invitados">
+
+                    <button
+                        type="button"
+                        id="selector-invitados-boton"
+                        class="selector-invitados-boton"
+                    >
+                        <span id="selector-invitados-texto">
+                            Selecciona tu nombre
+                        </span>
+
+                        <span class="selector-invitados-flecha">⌄</span>
+                    </button>
+
+                    <div
+                        id="selector-invitados-opciones"
+                        class="selector-invitados-opciones"
+                    ></div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+        <div id="vista-menu" class="vista">
+        </div>
+
+        <div id="vista-recuerdos" class="vista">
+
+                <!-- ========================================
+                RECUERDOS / FOTOS
+                ======================================== -->
+
+            <section class="recuerdos">
+
+                <div class="separador-seccion">
+                    <span></span>
+                    <span>❦</span>
+                    <span></span>
+                </div>
+
+                <p class="seccion-etiqueta">
+                    RECUERDOS
+                </p>
+
+                <h2>
+                    Compartid vuestros momentos
+                </h2>
+
+                <p class="recuerdos-descripcion">
+                    Subid una foto para compartirla con todos.
+                </p>
+
+                <div class="recuerdos-controles">
+
+                    <button
+                        type="button"
+                        id="boton-subir-foto"
+                        class="boton-recuerdos"
+                    >
+                        📷 Subir foto
+                    </button>
+
+                    <button
+                        type="button"
+                        id="boton-ver-fotos"
+                        class="boton-recuerdos"
+                    >
+                        Ver fotos <span>⌄</span>
+                    </button>
+
+                </div>
+
+                <input
+                    type="file"
+                    id="input-foto"
+                    accept="image/*"
+                    multiple
+                    hidden
+                >
+
+                <div
+                    id="galeria-fotos"
+                    class="galeria-fotos"
+                ></div>
+
+                <!-- VISOR DE FOTOS -->
+
+                <div
+                    id="visor-fotos"
+                    class="visor-fotos"
+                    aria-hidden="true"
+                >
+
+                    <button
+                        type="button"
+                        id="visor-cerrar"
+                        class="visor-cerrar"
+                        aria-label="Cerrar"
+                    >
+                        ×
+                    </button>
+
+                    <button
+                        type="button"
+                        id="visor-anterior"
+                        class="visor-flecha visor-anterior"
+                        aria-label="Foto anterior"
+                    >
+                        ‹
+                    </button>
+
+                    <div class="visor-contenido">
+
+                        <img
+                            id="visor-imagen"
+                            src=""
+                            alt=""
+                        >
+
+                        <p id="visor-autor"></p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        id="visor-siguiente"
+                        class="visor-flecha visor-siguiente"
+                        aria-label="Foto siguiente"
+                    >
+                        ›
+                    </button>
+
+                </div>
+
+            </section>
+
+        </div>
+
+        <div id="vista-musica" class="vista">
+        </div>
+
+        <div id="vista-recomendaciones" class="vista">
+
+            <!-- ========================================
+                RECOMENDACIONES
+                ======================================== -->
+
+            <section class="recomendaciones">
+
+                <p class="seccion-etiqueta">
+                    RECOMENDACIONES
+                </p>
+
+                <h2>
+                    ¿Qué os gustaría escuchar o mejorar?
+                </h2>
+
+                <div class="recomendacion-bloque">
+
+                    <p class="recomendacion-titulo">
+                        Recomendar canciones:
+                    </p>
+
+                    <div class="recomendacion-linea">
+
+                        <input
+                            type="text"
+                            id="input-cancion"
+                            placeholder=""
+                            maxlength="200"
+                        >
+
+                        <button
+                            type="button"
+                            id="boton-enviar-cancion"
+                        >
+                            Enviar
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="separador-recomendaciones">
+
+                    <span></span>
+                    <span>❦</span>
+                    <span></span>
+
+                </div>
+
+
+                <div class="recomendacion-bloque">
+
+                    <p class="recomendacion-titulo">
+                        Recomendaciones generales:
+                    </p>
+
+                    <div class="recomendacion-linea recomendacion-general">
+
+                        <input
+                            type="text"
+                            id="input-general"
+                            placeholder=""
+                            maxlength="500"
+                        >
+
+                        <button
+                            type="button"
+                            id="boton-enviar-general"
+                        >
+                            Enviar
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+        <div id="vista-historia" class="vista">
+        </div>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>
