@@ -11,7 +11,7 @@ async function cargarInvitados() {
 
     const { data, error } = await supabaseClient
         .from("invitados")
-        .select("id, nombre, seleccionado_por, seleccionado_en")
+        .select("id, nombre, seleccionado, seleccionado_por, seleccionado_en")
         .order("id");
 
     if (error) {
@@ -27,28 +27,120 @@ async function cargarInvitados() {
 
     opciones.innerHTML = "";
 
+    /* ========================================
+       BUSCAR SI YA TENEMOS UN INVITADO CONFIRMADO
+       ======================================== */
+
+    const invitadoConfirmadoActual = data.find(invitado =>
+        invitado.seleccionado === true &&
+        invitado.seleccionado_por === navegadorId
+    );
+
+    invitadoConfirmado =
+        invitadoConfirmadoActual !== undefined;
+
+    if (invitadoConfirmadoActual) {
+
+        invitadoSeleccionado = invitadoConfirmadoActual;
+
+        texto.textContent =
+            invitadoConfirmadoActual.nombre;
+
+        botonConfirmarInvitado.disabled = true;
+
+        estadoConfirmacion.textContent =
+            "✓ Asistencia confirmada";
+    }
+
+    /* ========================================
+    CREAR OPCIONES
+    ======================================== */
+
     data.forEach(invitado => {
 
-        const elemento = document.createElement("button");
+        const elemento =
+            document.createElement("button");
 
         elemento.type = "button";
 
-        elemento.className = "opcion-invitado";
+        elemento.className =
+            "opcion-invitado";
 
-        elemento.textContent = invitado.nombre;
+        elemento.textContent =
+            invitado.nombre;
 
 
         /* ========================================
-           ESTADO DEL INVITADO
-           ======================================== */
+        INVITADO CONFIRMADO POR ESTE NAVEGADOR
+        ======================================== */
 
-        if (invitado.seleccionado_por === navegadorId) {
+        if (
+            invitado.seleccionado === true &&
+            invitado.seleccionado_por === navegadorId
+        ) {
+
+            elemento.classList.add("seleccionado");
+            elemento.classList.add("confirmado");
+
+            elemento.disabled = true;
+
+            invitadoSeleccionado = invitado;
+
+            texto.textContent =
+                invitado.nombre;
+
+            botonConfirmarInvitado.disabled =
+                true;
+
+            estadoConfirmacion.textContent =
+                "✓ Asistencia confirmada";
+
+        }
+
+
+        /* ========================================
+        INVITADO CONFIRMADO POR OTRA PERSONA
+        ======================================== */
+
+        else if (invitado.seleccionado === true) {
+
+            elemento.classList.add("confirmado");
+
+            elemento.disabled = true;
+
+        }
+
+
+        /* ========================================
+        INVITADO SELECCIONADO POR ESTE NAVEGADOR
+        ======================================== */
+
+        else if (
+            invitado.seleccionado_por === navegadorId
+        ) {
 
             elemento.classList.add("seleccionado");
 
-            texto.textContent = invitado.nombre;
+            invitadoSeleccionado =
+                invitado;
 
-        } else if (
+            texto.textContent =
+                invitado.nombre;
+
+            botonConfirmarInvitado.disabled =
+                false;
+
+            estadoConfirmacion.textContent =
+                "";
+
+        }
+
+
+        /* ========================================
+        INVITADO OCUPADO POR OTRA PERSONA
+        ======================================== */
+
+        else if (
             invitado.seleccionado_por !== null
         ) {
 
@@ -60,25 +152,38 @@ async function cargarInvitados() {
 
 
         /* ========================================
-           CLICK
-           ======================================== */
+        CLICK
+        ======================================== */
 
-        elemento.addEventListener("click", async () => {
+        if (!elemento.disabled) {
 
-            await seleccionarInvitado(
-                invitado,
-                elemento
-            );
+            elemento.addEventListener("click", async () => {
 
-            await cargarInvitados();
+                if (invitadoConfirmado) {
+                    return;
+                }
 
-        });
+                await seleccionarInvitado(
+                    invitado,
+                    elemento
+                );
+
+                await cargarInvitados();
+
+            });
+
+        }
 
 
         opciones.appendChild(elemento);
 
     });
 }
+
+
+/* ========================================
+   SELECTOR DE INVITADOS
+   ======================================== */
 
 const selectorBoton =
     document.getElementById("selector-invitados-boton");
@@ -100,6 +205,13 @@ selectorBoton.addEventListener("click", () => {
 });
 
 
+const botonConfirmarInvitado =
+    document.getElementById("boton-confirmar-invitado");
+
+const estadoConfirmacion =
+    document.getElementById("estado-confirmacion");
+
+
 /* Cerrar al pulsar fuera */
 
 document.addEventListener("click", evento => {
@@ -116,9 +228,13 @@ document.addEventListener("click", evento => {
 
 });
 
+
 /* ========================================
    IDENTIFICADOR DEL NAVEGADOR
    ======================================== */
+
+let invitadoSeleccionado = null;
+let invitadoConfirmado = false;
 
 let navegadorId = localStorage.getItem("navegador_id");
 
@@ -130,6 +246,7 @@ if (!navegadorId) {
         "navegador_id",
         navegadorId
     );
+
 }
 
 cargarInvitados();
@@ -139,6 +256,10 @@ cargarInvitados();
    ======================================== */
 
 async function seleccionarInvitado(invitado, elemento) {
+
+    if (invitadoConfirmado) {
+        return;
+    }
 
     /* Si ya es nuestro, lo liberamos */
 
@@ -226,6 +347,73 @@ async function seleccionarInvitado(invitado, elemento) {
         alert("Este nombre ya ha sido seleccionado por otra persona.");
     }
 }
+
+botonConfirmarInvitado.addEventListener("click", async () => {
+
+    if (!invitadoSeleccionado) {
+        return;
+    }
+
+    if (invitadoSeleccionado.seleccionado) {
+        return;
+    }
+
+    const confirmar = confirm(
+        `¿Estás seguro de que quieres confirmar a ${invitadoSeleccionado.nombre}?`
+    );
+
+    if (!confirmar) {
+        return;
+    }
+
+    botonConfirmarInvitado.disabled = true;
+
+    const { data, error } =
+        await supabaseClient.rpc(
+            "confirmar_invitado",
+            {
+                invitado_id: invitadoSeleccionado.id,
+                navegador_id: navegadorId
+            }
+        );
+
+    if (error) {
+
+        console.error(
+            "Error confirmando invitado:",
+            error
+        );
+
+        botonConfirmarInvitado.disabled = false;
+
+        alert(
+            "No se ha podido confirmar la asistencia."
+        );
+
+        return;
+    }
+
+    if (data === true) {
+
+        invitadoSeleccionado.seleccionado = true;
+
+        invitadoConfirmado = true;
+
+        estadoConfirmacion.textContent =
+            "✓ Asistencia confirmada";
+
+        await cargarInvitados();
+
+    } else {
+
+        botonConfirmarInvitado.disabled = false;
+
+        alert(
+            "No se ha podido confirmar este nombre."
+        );
+    }
+
+});
 
 /* ========================================
    CUENTA ATRÁS
