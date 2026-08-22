@@ -1965,13 +1965,11 @@ body {
 
 .menu-autor {
 
-    position: absolute;
-
-    bottom: 24px;
-
-    left: 0;
+    position: static;
 
     width: 100%;
+
+    margin: -30px 0 35px;
 
     text-align: center;
 
@@ -1986,43 +1984,6 @@ body {
     opacity: 0.65;
 
     pointer-events: none;
-}
-
-/* ========================================
-   FIRMA — MÓVIL HORIZONTAL
-   ======================================== */
-
-@media (orientation: landscape) and (max-height: 500px) {
-
-    #menu-lateral {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .menu-cabecera {
-        flex-shrink: 0;
-        margin-bottom: 5px;
-    }
-
-    .menu-autor {
-        position: static !important;
-        bottom: auto !important;
-        left: auto !important;
-
-        width: 100%;
-
-        margin: 0 0 15px 0;
-
-        text-align: center;
-
-        font-size: 0.75rem;
-    }
-
-    .menu-navegacion {
-        flex-shrink: 0;
-        margin: 0;
-    }
-
 }
 
 /* ========================================
