@@ -17,6 +17,8 @@
 
 <body>
 
+    <div id="youtube-player"></div>
+
         <!-- ========================================
         BOTÓN DEL MENÚ
         ======================================== -->
@@ -31,6 +33,36 @@
         <span></span>
         <span></span>
         <span></span>
+    </button>
+
+    <button
+        type="button"
+        id="boton-musica"
+        class="boton-musica"
+        aria-label="Activar música"
+        aria-pressed="false"
+    >
+
+    <audio
+        id="reproductor-musica"
+        preload="auto"
+    ></audio>
+
+        <svg
+            class="icono-musica"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+        >
+            <path
+                d="M4 9v6h4l5 4V5L8 9H4Z"
+            />
+            <path
+                class="onda-sonido"
+                d="M16.5 10
+                C17.5 11 18 12.2 18 13.5
+                C18 14.8 17.5 16 16.5 17"
+            />
+        </svg>
     </button>
 
         <!-- ========================================
@@ -561,6 +593,7 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script src="js/main.js"></script>
 
 </body>

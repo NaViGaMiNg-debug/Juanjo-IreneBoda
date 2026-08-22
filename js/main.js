@@ -7,6 +7,8 @@ const supabaseClient = window.supabase.createClient(
     SUPABASE_KEY
 );
 
+
+
 async function cargarInvitados() {
 
     const { data, error } = await supabaseClient
@@ -1580,3 +1582,483 @@ opcionesMenu.forEach(opcion => {
     });
 
 });
+
+/* ========================================
+   REPRODUCTOR DE MÚSICA
+   ======================================== */
+
+const reproductorMusica =
+    document.getElementById("reproductor-musica");
+
+const botonMusica =
+    document.getElementById("boton-musica");
+
+
+/* ========================================
+   LISTA DE CANCIONES
+   ======================================== */
+
+const canciones = [
+    {
+        archivo: "assets/songs/song1.mp3",
+        inicio: 18,
+        fin: 83
+    },
+    {
+        archivo: "assets/songs/song2.mp3",
+        inicio: 37,
+        fin: 100
+    },
+    {
+        archivo: "assets/songs/song3.mp3",
+        inicio: 147,
+        fin: 214
+    },
+    {
+        archivo: "assets/songs/song4.mp3",
+        duracion: 65
+    },
+    {
+        archivo: "assets/songs/song5.mp3",
+        inicio: 7,
+        fin: 82
+    },
+    {
+        archivo: "assets/songs/song6.mp3",
+        inicio: 135,
+        fin: 201
+    }
+];
+
+let cancionActual = 0;
+let intervaloCancion = null;
+let haciendoTransicion = false;
+
+let ordenCanciones = [];
+let posicionOrden = 0;
+
+
+/* ========================================
+   DURACIÓN DEL FUNDIDO
+   ======================================== */
+
+const duracionFundido = 4000;
+
+/* ========================================
+   CREAR ORDEN ALEATORIO
+   ======================================== */
+
+function crearOrdenAleatorio() {
+
+    ordenCanciones = [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+    ];
+
+    /* Fisher-Yates */
+
+    for (
+        let i = ordenCanciones.length - 1;
+        i > 0;
+        i--
+    ) {
+
+        const j =
+            Math.floor(
+                Math.random() * (i + 1)
+            );
+
+        [
+            ordenCanciones[i],
+            ordenCanciones[j]
+        ] = [
+            ordenCanciones[j],
+            ordenCanciones[i]
+        ];
+
+    }
+
+
+    /* Evitar que el primer tema
+       sea el mismo que el último
+       de la ronda anterior */
+
+    if (
+        ordenCanciones.length > 1 &&
+        ordenCanciones[0] === cancionActual
+    ) {
+
+        [
+            ordenCanciones[0],
+            ordenCanciones[1]
+        ] = [
+            ordenCanciones[1],
+            ordenCanciones[0]
+        ];
+
+    }
+
+    posicionOrden = 0;
+
+}
+
+
+/* Crear el primer orden */
+
+crearOrdenAleatorio();
+
+/* ========================================
+   CARGAR CANCIÓN
+   ======================================== */
+
+function cargarCancion(indice) {
+
+    cancionActual = indice;
+
+    const cancion =
+        canciones[cancionActual];
+
+    reproductorMusica.src =
+        cancion.archivo;
+
+    reproductorMusica.load();
+
+}
+
+
+/* ========================================
+   PREPARAR INTERVALO
+   ======================================== */
+
+function prepararIntervaloCancion(cancion) {
+
+    /* Las canciones con intervalo fijo
+       ya tienen inicio y fin */
+
+    if (cancion.inicio !== undefined) {
+        return;
+    }
+
+
+    /* SONG 4 — INTERVALO ALEATORIO */
+
+    const duracionIntervalo =
+        cancion.duracion;
+
+    const maximoInicio =
+        reproductorMusica.duration -
+        duracionIntervalo;
+
+
+    if (maximoInicio <= 0) {
+
+        cancion.inicio = 0;
+
+        cancion.fin =
+            reproductorMusica.duration;
+
+        return;
+    }
+
+
+    const inicioAleatorio =
+        Math.random() * maximoInicio;
+
+    cancion.inicio =
+        inicioAleatorio;
+
+    cancion.fin =
+        inicioAleatorio +
+        duracionIntervalo;
+
+}
+
+
+/* ========================================
+   INICIAR INTERVALO
+   ======================================== */
+
+function iniciarIntervaloCancion() {
+
+    clearInterval(intervaloCancion);
+
+    const cancion =
+        canciones[cancionActual];
+
+    prepararIntervaloCancion(cancion);
+
+    reproductorMusica.currentTime =
+        cancion.inicio;
+
+
+    intervaloCancion = setInterval(() => {
+
+        if (
+            reproductorMusica.currentTime >=
+            cancion.fin
+        ) {
+
+            clearInterval(intervaloCancion);
+
+            cambiarCancionConFundido();
+
+        }
+
+    }, 100);
+
+}
+
+
+/* ========================================
+   FUNDIDO DE SALIDA
+   ======================================== */
+
+function fundidoSalida() {
+
+    return new Promise(resolve => {
+
+        const pasos = 20;
+
+        let paso = 0;
+
+        const volumenInicial =
+            reproductorMusica.volume;
+
+        const intervalo =
+            duracionFundido / pasos;
+
+
+        const fade =
+            setInterval(() => {
+
+                paso++;
+
+                reproductorMusica.volume =
+                    volumenInicial *
+                    (1 - paso / pasos);
+
+
+                if (paso >= pasos) {
+
+                    clearInterval(fade);
+
+                    reproductorMusica.volume = 0;
+
+                    resolve();
+
+                }
+
+            }, intervalo);
+
+    });
+
+}
+
+
+/* ========================================
+   FUNDIDO DE ENTRADA
+   ======================================== */
+
+function fundidoEntrada() {
+
+    return new Promise(resolve => {
+
+        const pasos = 20;
+
+        let paso = 0;
+
+        const intervalo =
+            duracionFundido / pasos;
+
+
+        const fade =
+            setInterval(() => {
+
+                paso++;
+
+                reproductorMusica.volume =
+                    paso / pasos;
+
+
+                if (paso >= pasos) {
+
+                    clearInterval(fade);
+
+                    reproductorMusica.volume = 1;
+
+                    resolve();
+
+                }
+
+            }, intervalo);
+
+    });
+
+}
+
+
+/* ========================================
+   CAMBIAR CANCIÓN CON FUNDIDO
+   ======================================== */
+
+async function cambiarCancionConFundido() {
+
+    if (haciendoTransicion) {
+        return;
+    }
+
+    haciendoTransicion = true;
+
+
+    /* FUNDIDO DE SALIDA */
+
+    await fundidoSalida();
+
+
+    /* SIGUIENTE CANCIÓN */
+
+    posicionOrden++;
+
+if (
+    posicionOrden >=
+    ordenCanciones.length
+) {
+
+    crearOrdenAleatorio();
+
+}
+
+cancionActual =
+    ordenCanciones[posicionOrden];
+
+    cargarCancion(cancionActual);
+
+
+    /* Esperamos a que cargue */
+
+    reproductorMusica.addEventListener(
+        "loadedmetadata",
+        async function prepararNuevaCancion() {
+
+            reproductorMusica.removeEventListener(
+                "loadedmetadata",
+                prepararNuevaCancion
+            );
+
+
+            iniciarIntervaloCancion();
+
+
+            if (!reproductorMusica.muted) {
+
+                await reproductorMusica.play();
+
+                await fundidoEntrada();
+
+            }
+
+
+            haciendoTransicion = false;
+
+        }
+    );
+
+}
+
+
+/* ========================================
+   INICIAR PRIMERA CANCIÓN
+   ======================================== */
+
+cargarCancion(
+    ordenCanciones[0]
+);
+
+cancionActual =
+    ordenCanciones[0];
+
+reproductorMusica.addEventListener(
+    "loadedmetadata",
+    () => {
+
+        iniciarIntervaloCancion();
+
+    }
+);
+
+
+/* ========================================
+   ESTADO INICIAL
+   ======================================== */
+
+reproductorMusica.volume = 1;
+
+reproductorMusica.muted = true;
+
+
+/* ========================================
+   BOTÓN DE MÚSICA
+   ======================================== */
+
+botonMusica.addEventListener(
+    "click",
+    () => {
+
+        if (reproductorMusica.muted) {
+
+            reproductorMusica.muted = false;
+
+            reproductorMusica.volume = 0;
+
+            reproductorMusica.play();
+
+            fundidoEntrada();
+
+
+            botonMusica.setAttribute(
+                "aria-label",
+                "Silenciar música"
+            );
+
+            botonMusica.setAttribute(
+                "aria-pressed",
+                "true"
+            );
+
+
+            botonMusica
+                .querySelector(
+                    ".onda-sonido"
+                )
+                .style.display = "block";
+
+
+        } else {
+
+            reproductorMusica.muted = true;
+
+            botonMusica.setAttribute(
+                "aria-label",
+                "Activar música"
+            );
+
+            botonMusica.setAttribute(
+                "aria-pressed",
+                "false"
+            );
+
+
+            botonMusica
+                .querySelector(
+                    ".onda-sonido"
+                )
+                .style.display = "none";
+
+        }
+
+    }
+);

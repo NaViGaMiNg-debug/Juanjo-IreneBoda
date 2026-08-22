@@ -1519,6 +1519,78 @@ body {
 }
 
 /* ========================================
+   BOTÓN DE MÚSICA
+   ======================================== */
+
+.boton-musica {
+    position: fixed;
+
+    top: 80px;
+    left: 20px;
+
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid rgba(168, 138, 90, 0.45);
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.92);
+
+    cursor: pointer;
+
+    z-index: 1001;
+
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.08);
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.icono-musica {
+    width: 21px;
+    height: 21px;
+
+    fill: none;
+
+    stroke: var(--color-dorado);
+
+    stroke-width: 1.7;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+.boton-musica:hover {
+    background: rgba(255, 255, 255, 1);
+
+    transform: scale(1.05);
+
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+
+.boton-musica:active {
+    transform: scale(0.95);
+}
+
+.boton-musica .onda-sonido {
+    display: none;
+    transform: translateY(-1px);
+}
+
+/* ========================================
    MENÚ LATERAL
    ======================================== */
 
@@ -1856,24 +1928,50 @@ body {
 }
 
 /* ========================================
+   MENÚ — MÓVIL HORIZONTAL
+   ======================================== */
+
+@media (max-width: 600px) and (orientation: landscape) {
+
+    .menu-autor {
+        position: static;
+
+        width: 100%;
+
+        margin-top: 35px;
+
+        padding-bottom: 10px;
+    }
+
+}
+
+/* ========================================
    FIRMA DEL MENÚ
    ======================================== */
 
 .menu-autor {
+
     position: absolute;
+
     bottom: 24px;
-    left: 0;
-    width: 100%;
+
+    left: 28px;
+
+    width: calc(100% - 56px);
 
     text-align: center;
 
     font-family: var(--fuente-elegante);
+
     font-size: 0.85rem;
+
     letter-spacing: 0.08em;
 
     color: var(--color-texto);
 
     opacity: 0.65;
+
+    pointer-events: none;
 }
 
 /* ========================================
@@ -1964,4 +2062,20 @@ body {
     font-size: 18px;
 
     color: var(--color-dorado);
+}
+
+/* ========================================
+   REPRODUCTOR DE YOUTUBE
+   ======================================== */
+
+#youtube-player {
+    position: fixed;
+
+    width: 1px;
+    height: 1px;
+
+    left: -9999px;
+    top: -9999px;
+
+    pointer-events: none;
 }
