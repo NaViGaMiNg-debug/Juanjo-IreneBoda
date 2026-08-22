@@ -2174,3 +2174,420 @@ botonesMenu.forEach(boton => {
     });
 
 });
+
+/* ========================================
+   NUESTRA HISTORIA — CARRUSEL
+   ======================================== */
+
+const historiaFoto =
+    document.getElementById("historia-foto");
+
+const historiaFrase =
+    document.getElementById("historia-frase");
+
+const historiaContador =
+    document.getElementById("historia-contador");
+
+const historiaAnterior =
+    document.querySelector(".historia-anterior");
+
+const historiaSiguiente =
+    document.querySelector(".historia-siguiente");
+
+
+/* ========================================
+   FOTOS Y FRASES
+   ======================================== */
+
+const historiaFrases = [
+
+    "El novio",
+    "La novia",
+    "Primera foto juntos",
+    "Noviazgo",
+    "Construyendo",
+    "Esperando",
+    "Familia",
+    "Poco a poco",
+    "Un hogar",
+    "Ilusiones",
+    "Siempre de la mano",
+    "Siempre...",
+    "Siempre...",
+    "Siempre.",
+    "Y a disfrutar de la vida",
+    "Con viajes",
+    "Asturias",
+    "Córdoba",
+    "Almería",
+    "Granada",
+    "Madrid",
+    "Sevilla",
+    "Málaga",
+    "Inglaterra",
+    "En casa",
+    "En la calle",
+    "En las motos",
+    "De concierto",
+    "En la playa",
+    "De feria",
+    "En la sierra",
+    "En el falla",
+    "De halloween",
+    "Carnavaleando",
+    "Navideños",
+    "De cumple",
+    "De ruta",
+    "En equipo",
+    "Íntimo",
+    "Con cariño",
+    "Celebrando",
+    "Brindando",
+    "Orgullosos",
+    "Muuuy orgullosos",
+    "Payasos",
+    "Muy nosotros",
+    "Cumpliendo metas",
+    "Nosotros"
+
+];
+
+
+const historiaFotos =
+    historiaFrases.map(
+        (_, indice) =>
+            `assets/shots/shot${indice + 1}.jpeg`
+    );
+
+
+/* ========================================
+   ESTADO
+   ======================================== */
+
+let historiaActual = 0;
+
+let historiaTemporizador;
+
+
+/* ========================================
+   CAMBIAR FOTO
+   ======================================== */
+
+function cambiarHistoria(indice) {
+
+    historiaFoto.style.opacity = "0";
+
+
+    setTimeout(() => {
+
+        historiaActual = indice;
+
+
+        historiaFoto.src =
+            historiaFotos[historiaActual];
+
+        historiaFoto.alt =
+            historiaFrases[historiaActual];
+
+        historiaFrase.textContent =
+            historiaFrases[historiaActual];
+
+        historiaContador.textContent =
+            `${historiaActual + 1} / ${historiaFotos.length}`;
+
+
+        historiaFoto.style.opacity = "1";
+
+    }, 450);
+
+}
+
+
+/* ========================================
+   SIGUIENTE
+   ======================================== */
+
+function siguienteHistoria() {
+
+    let siguiente =
+        historiaActual + 1;
+
+
+    if (siguiente >= historiaFotos.length) {
+
+        siguiente = 0;
+
+    }
+
+
+    cambiarHistoria(siguiente);
+
+}
+
+
+/* ========================================
+   ANTERIOR
+   ======================================== */
+
+function anteriorHistoria() {
+
+    let anterior =
+        historiaActual - 1;
+
+
+    if (anterior < 0) {
+
+        anterior =
+            historiaFotos.length - 1;
+
+    }
+
+
+    cambiarHistoria(anterior);
+
+}
+
+
+/* ========================================
+   REINICIAR TEMPORIZADOR
+   ======================================== */
+
+function reiniciarHistoriaTemporizador() {
+
+    clearInterval(
+        historiaTemporizador
+    );
+
+
+    historiaTemporizador =
+        setInterval(
+            siguienteHistoria,
+            6000
+        );
+
+}
+
+
+/* ========================================
+   BOTONES
+   ======================================== */
+
+historiaSiguiente.addEventListener(
+    "click",
+    () => {
+
+        siguienteHistoria();
+
+        reiniciarHistoriaTemporizador();
+
+    }
+);
+
+
+historiaAnterior.addEventListener(
+    "click",
+    () => {
+
+        anteriorHistoria();
+
+        reiniciarHistoriaTemporizador();
+
+    }
+);
+
+
+/* ========================================
+   INICIAR
+   ======================================== */
+
+historiaFoto.style.opacity = "1";
+
+reiniciarHistoriaTemporizador();
+
+/* ========================================
+   VISOR — NUESTRA HISTORIA
+   ======================================== */
+
+const historiaVisor =
+    document.getElementById(
+        "historia-visor"
+    );
+
+const historiaVisorFoto =
+    document.getElementById(
+        "historia-visor-foto"
+    );
+
+const historiaVisorFrase =
+    document.getElementById(
+        "historia-visor-frase"
+    );
+
+const historiaVisorCerrar =
+    document.getElementById(
+        "historia-visor-cerrar"
+    );
+
+const historiaVisorAnterior =
+    document.getElementById(
+        "historia-visor-anterior"
+    );
+
+const historiaVisorSiguiente =
+    document.getElementById(
+        "historia-visor-siguiente"
+    );
+
+
+/* ========================================
+   MOSTRAR FOTO EN EL VISOR
+   ======================================== */
+
+function actualizarHistoriaVisor() {
+
+    historiaVisorFoto.src =
+        historiaFotos[historiaActual];
+
+    historiaVisorFoto.alt =
+        historiaFrases[historiaActual];
+
+    historiaVisorFrase.textContent =
+        historiaFrases[historiaActual];
+
+}
+
+
+/* ========================================
+   ABRIR VISOR
+   ======================================== */
+
+historiaFoto.addEventListener(
+    "click",
+    () => {
+
+        actualizarHistoriaVisor();
+
+        historiaVisor.classList.add(
+            "abierto"
+        );
+
+        historiaVisor.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+        document.body.style.overflow =
+            "hidden";
+
+    }
+);
+
+
+/* ========================================
+   CERRAR VISOR
+   ======================================== */
+
+function cerrarHistoriaVisor() {
+
+    historiaVisor.classList.remove(
+        "abierto"
+    );
+
+    historiaVisor.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    document.body.style.overflow =
+        "";
+
+}
+
+
+/* ========================================
+   BOTÓN CERRAR
+   ======================================== */
+
+historiaVisorCerrar.addEventListener(
+    "click",
+    cerrarHistoriaVisor
+);
+
+
+/* ========================================
+   FOTO ANTERIOR
+   ======================================== */
+
+historiaVisorAnterior.addEventListener(
+    "click",
+    () => {
+
+        anteriorHistoria();
+
+        actualizarHistoriaVisor();
+
+        reiniciarHistoriaTemporizador();
+
+    }
+);
+
+
+/* ========================================
+   FOTO SIGUIENTE
+   ======================================== */
+
+historiaVisorSiguiente.addEventListener(
+    "click",
+    () => {
+
+        siguienteHistoria();
+
+        actualizarHistoriaVisor();
+
+        reiniciarHistoriaTemporizador();
+
+    }
+);
+
+
+/* ========================================
+   CERRAR AL PULSAR FUERA
+   ======================================== */
+
+historiaVisor.addEventListener(
+    "click",
+    evento => {
+
+        if (
+            evento.target === historiaVisor
+        ) {
+
+            cerrarHistoriaVisor();
+
+        }
+
+    }
+);
+
+
+/* ========================================
+   ESC PARA CERRAR
+   ======================================== */
+
+document.addEventListener(
+    "keydown",
+    evento => {
+
+        if (
+            evento.key === "Escape" &&
+            historiaVisor.classList.contains(
+                "abierto"
+            )
+        ) {
+
+            cerrarHistoriaVisor();
+
+        }
+
+    }
+);
