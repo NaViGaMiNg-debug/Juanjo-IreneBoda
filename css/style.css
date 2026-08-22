@@ -1928,19 +1928,22 @@ body {
 }
 
 /* ========================================
-   MENÚ — MÓVIL HORIZONTAL
+   FIRMA — MÓVIL HORIZONTAL
    ======================================== */
 
 @media (max-width: 600px) and (orientation: landscape) {
 
     .menu-autor {
-        position: static;
+        position: absolute;
+
+        top: 65px;
+        bottom: auto;
+
+        left: 0;
 
         width: 100%;
 
-        margin-top: 35px;
-
-        padding-bottom: 10px;
+        text-align: center;
     }
 
 }
