@@ -2182,6 +2182,9 @@ botonesMenu.forEach(boton => {
 const historiaFoto =
     document.getElementById("historia-foto");
 
+const historiaPista =
+    document.getElementById("historia-pista");
+
 const historiaFrase =
     document.getElementById("historia-frase");
 
@@ -2268,37 +2271,106 @@ let historiaActual = 0;
 
 let historiaTemporizador;
 
+let historiaAnimando = false;
+
 
 /* ========================================
-   CAMBIAR FOTO
+   ACTUALIZAR LAS TRES FOTOS
    ======================================== */
 
-function cambiarHistoria(indice) {
+function actualizarTresFotos() {
 
-    historiaFoto.style.opacity = "0";
+    const anterior =
+        (historiaActual - 1 + historiaFotos.length)
+        % historiaFotos.length;
 
-
-    setTimeout(() => {
-
-        historiaActual = indice;
-
-
-        historiaFoto.src =
-            historiaFotos[historiaActual];
-
-        historiaFoto.alt =
-            historiaFrases[historiaActual];
-
-        historiaFrase.textContent =
-            historiaFrases[historiaActual];
-
-        historiaContador.textContent =
-            `${historiaActual + 1} / ${historiaFotos.length}`;
+    const siguiente =
+        (historiaActual + 1)
+        % historiaFotos.length;
 
 
-        historiaFoto.style.opacity = "1";
+    const imagenes =
+        historiaPista.querySelectorAll(
+            ".historia-imagen"
+        );
 
-    }, 450);
+
+    imagenes[0].src =
+        historiaFotos[anterior];
+
+    imagenes[0].alt =
+        historiaFrases[anterior];
+
+
+    imagenes[1].src =
+        historiaFotos[historiaActual];
+
+    imagenes[1].alt =
+        historiaFrases[historiaActual];
+
+
+    imagenes[2].src =
+        historiaFotos[siguiente];
+
+    imagenes[2].alt =
+        historiaFrases[siguiente];
+
+
+    historiaFrase.textContent =
+        historiaFrases[historiaActual];
+
+    historiaContador.textContent =
+        `${historiaActual + 1} / ${historiaFotos.length}`;
+
+
+    const slides =
+        historiaPista.querySelectorAll(
+            ".historia-slide"
+        );
+
+
+    slides.forEach(slide => {
+
+        slide.classList.remove(
+            "historia-slide-actual"
+        );
+
+    });
+
+
+    slides[1].classList.add(
+        "historia-slide-actual"
+    );
+
+}
+
+
+/* ========================================
+   OBTENER ANCHO DE UNA FOTO
+   ======================================== */
+
+function obtenerAnchoHistoria() {
+
+    return historiaPista
+        .querySelector(".historia-slide")
+        .getBoundingClientRect()
+        .width;
+
+}
+
+
+/* ========================================
+   COLOCAR FOTO ACTUAL EN EL CENTRO
+   ======================================== */
+
+function colocarHistoriaEnCentro() {
+
+    const ancho =
+        obtenerAnchoHistoria();
+
+
+    historiaPista.style.transform =
+        `translateX(-${ancho}px)`;
 
 }
 
@@ -2309,18 +2381,73 @@ function cambiarHistoria(indice) {
 
 function siguienteHistoria() {
 
-    let siguiente =
-        historiaActual + 1;
-
-
-    if (siguiente >= historiaFotos.length) {
-
-        siguiente = 0;
-
+    if (historiaAnimando) {
+        return;
     }
 
 
-    cambiarHistoria(siguiente);
+    historiaAnimando = true;
+
+
+    const ancho =
+        obtenerAnchoHistoria();
+
+
+    /*
+
+       [ ANTERIOR ] [ ACTUAL ] [ SIGUIENTE ]
+                       ↓
+
+       Movemos una foto hacia la izquierda
+
+    */
+
+    historiaPista.style.transform =
+        `translateX(-${ancho * 2}px)`;
+
+
+    historiaPista.addEventListener(
+        "transitionend",
+        finalizarSiguienteHistoria,
+        { once: true }
+    );
+
+}
+
+
+/* ========================================
+   TERMINAR SIGUIENTE
+   ======================================== */
+
+function finalizarSiguienteHistoria() {
+
+    historiaPista.style.transition =
+        "none";
+
+
+    historiaActual =
+        (historiaActual + 1)
+        % historiaFotos.length;
+
+
+    actualizarTresFotos();
+
+    colocarHistoriaEnCentro();
+
+
+    /*
+       Forzamos al navegador a aplicar
+       inmediatamente la posición central.
+    */
+
+    historiaPista.offsetHeight;
+
+
+    historiaPista.style.transition =
+        "";
+
+
+    historiaAnimando = false;
 
 }
 
@@ -2331,19 +2458,62 @@ function siguienteHistoria() {
 
 function anteriorHistoria() {
 
-    let anterior =
-        historiaActual - 1;
-
-
-    if (anterior < 0) {
-
-        anterior =
-            historiaFotos.length - 1;
-
+    if (historiaAnimando) {
+        return;
     }
 
 
-    cambiarHistoria(anterior);
+    historiaAnimando = true;
+
+
+    /*
+       [ ANTERIOR ] [ ACTUAL ] [ SIGUIENTE ]
+              ↓
+
+       Movemos una foto hacia la derecha.
+    */
+
+    historiaPista.style.transform =
+        "translateX(0)";
+
+
+    historiaPista.addEventListener(
+        "transitionend",
+        finalizarAnteriorHistoria,
+        { once: true }
+    );
+
+}
+
+
+/* ========================================
+   TERMINAR ANTERIOR
+   ======================================== */
+
+function finalizarAnteriorHistoria() {
+
+    historiaPista.style.transition =
+        "none";
+
+
+    historiaActual =
+        (historiaActual - 1 + historiaFotos.length)
+        % historiaFotos.length;
+
+
+    actualizarTresFotos();
+
+    colocarHistoriaEnCentro();
+
+
+    historiaPista.offsetHeight;
+
+
+    historiaPista.style.transition =
+        "";
+
+
+    historiaAnimando = false;
 
 }
 
@@ -2369,7 +2539,7 @@ function reiniciarHistoriaTemporizador() {
 
 
 /* ========================================
-   BOTONES
+   BOTÓN SIGUIENTE
    ======================================== */
 
 historiaSiguiente.addEventListener(
@@ -2384,6 +2554,10 @@ historiaSiguiente.addEventListener(
 );
 
 
+/* ========================================
+   BOTÓN ANTERIOR
+   ======================================== */
+
 historiaAnterior.addEventListener(
     "click",
     () => {
@@ -2397,10 +2571,25 @@ historiaAnterior.addEventListener(
 
 
 /* ========================================
-   INICIAR
+   INICIALIZAR CARRUSEL
    ======================================== */
 
-historiaFoto.style.opacity = "1";
+actualizarTresFotos();
+
+
+historiaPista.style.transition =
+    "none";
+
+
+colocarHistoriaEnCentro();
+
+
+historiaPista.offsetHeight;
+
+
+historiaPista.style.transition =
+    "";
+
 
 reiniciarHistoriaTemporizador();
 
@@ -2590,4 +2779,81 @@ document.addEventListener(
         }
 
     }
+);
+
+/* ========================================
+   DESLIZAR — VISOR NUESTRA HISTORIA
+   ======================================== */
+
+let historiaInicioX = 0;
+let historiaFinX = 0;
+
+
+/* ========================================
+   COMIENZA EL DESLIZAMIENTO
+   ======================================== */
+
+historiaVisor.addEventListener(
+    "touchstart",
+    evento => {
+
+        historiaInicioX =
+            evento.touches[0].clientX;
+
+    },
+    { passive: true }
+);
+
+
+/* ========================================
+   TERMINA EL DESLIZAMIENTO
+   ======================================== */
+
+historiaVisor.addEventListener(
+    "touchend",
+    evento => {
+
+        historiaFinX =
+            evento.changedTouches[0].clientX;
+
+        const distancia =
+            historiaFinX - historiaInicioX;
+
+
+        /* Deslizamiento demasiado pequeño */
+
+        if (Math.abs(distancia) < 50) {
+
+            return;
+
+        }
+
+
+        /* Deslizar hacia la izquierda */
+
+        if (distancia < 0) {
+
+            siguienteHistoria();
+
+            actualizarHistoriaVisor();
+
+            reiniciarHistoriaTemporizador();
+
+        }
+
+
+        /* Deslizar hacia la derecha */
+
+        else {
+
+            anteriorHistoria();
+
+            actualizarHistoriaVisor();
+
+            reiniciarHistoriaTemporizador();
+
+        }
+
+    },
+    { passive: true }
 );

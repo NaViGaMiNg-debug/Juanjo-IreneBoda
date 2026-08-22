@@ -2508,7 +2508,7 @@ body {
     align-items: center;
     justify-content: center;
 
-    gap: 25px;
+    gap: 18px;
 
     width: 100%;
 
@@ -2517,21 +2517,22 @@ body {
 
 
 /* ========================================
-   CONTENEDOR DE LA FOTO
+   CONTENEDOR
    ======================================== */
 
 .historia-foto-contenedor {
     position: relative;
 
-    width: min(680px, 75vw);
+    width: min(760px, 82vw);
     height: min(480px, 55vh);
 
     display: flex;
 
     align-items: center;
-    justify-content: center;
 
-    padding: 22px;
+    overflow: hidden;
+
+    padding: 22px 0;
 
     box-sizing: border-box;
 
@@ -2543,56 +2544,75 @@ body {
 
     box-shadow:
         0 10px 35px rgba(95, 85, 72, 0.10);
-
-    overflow: hidden;
-}
-
-
-/* Marco interior */
-
-.historia-foto-contenedor::before {
-    content: "";
-
-    position: absolute;
-
-    inset: 9px;
-
-    border: 1px solid
-        rgba(168, 138, 90, 0.22);
-
-    pointer-events: none;
-}
-
-
-/* Pequeños adornos en las esquinas */
-
-.historia-foto-contenedor::after {
-    content: "❦";
-
-    position: absolute;
-
-    top: -7px;
-    left: 50%;
-
-    transform: translateX(-50%);
-
-    padding: 0 10px;
-
-    background: var(--color-fondo);
-
-    color: var(--color-dorado);
-
-    font-size: 1.1rem;
-
-    pointer-events: none;
 }
 
 
 /* ========================================
-   FOTO
+   PISTA
    ======================================== */
 
-#historia-foto {
+.historia-pista {
+    display: flex;
+
+    align-items: center;
+
+    width: max-content;
+
+    height: 100%;
+
+    transform: translateX(0);
+
+    transition:
+        transform 0.65s
+        cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+
+/* ========================================
+   CADA FOTO
+   ======================================== */
+
+.historia-slide {
+    width: min(600px, 68vw);
+
+    height: 100%;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 12px;
+
+    box-sizing: border-box;
+
+    opacity: 0.45;
+
+    transform: scale(0.88);
+
+    transition:
+        opacity 0.65s ease,
+        transform 0.65s
+        cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+
+/* FOTO CENTRAL */
+
+.historia-slide-actual {
+    opacity: 1;
+
+    transform: scale(1);
+}
+
+
+/* ========================================
+   IMAGEN
+   ======================================== */
+
+.historia-imagen {
     display: block;
 
     width: 100%;
@@ -2603,12 +2623,7 @@ body {
     cursor: pointer;
 
     transition:
-        opacity 0.5s ease,
         transform 0.3s ease;
-}
-
-#historia-foto:hover {
-    transform: scale(1.01);
 }
 
 
@@ -2639,8 +2654,6 @@ body {
 
     font-size: 2.8rem;
 
-    font-weight: normal;
-
     line-height: 1;
 
     cursor: pointer;
@@ -2652,13 +2665,11 @@ body {
         transform 0.25s ease;
 }
 
-
 .historia-flecha:hover {
     opacity: 1;
 
     transform: scale(1.15);
 }
-
 
 .historia-flecha:active {
     transform: scale(0.95);
@@ -2984,9 +2995,9 @@ body {
 
     #historia-visor-foto {
 
-        max-width: 90vw;
+    max-width: 78vw;
 
-        max-height: 72vh;
+    max-height: 68vh;
     }
 
     .historia-visor-frase {
