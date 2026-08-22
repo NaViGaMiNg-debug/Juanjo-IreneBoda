@@ -2091,3 +2091,357 @@ body {
 
     pointer-events: none;
 }
+
+/* ========================================
+   VISTA — MENÚ
+   ======================================== */
+
+#vista-menu {
+    width: min(900px, 92%);
+    margin: 0 auto;
+    padding: 60px 0 80px;
+}
+
+
+/* ========================================
+   TÍTULO
+   ======================================== */
+
+.menu-titulo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+
+    margin-bottom: 50px;
+
+    text-align: center;
+}
+
+.menu-titulo h1 {
+    margin: 0;
+
+    color: var(--color-dorado);
+
+    font-family: var(--fuente-elegante);
+
+    font-size: clamp(3rem, 7vw, 5rem);
+
+    font-weight: normal;
+
+    letter-spacing: 0.08em;
+}
+
+.menu-adorno {
+    color: var(--color-dorado-claro);
+
+    font-size: 1.8rem;
+
+    opacity: 0.8;
+}
+
+
+/* ========================================
+   SECCIONES PRINCIPALES
+   ======================================== */
+
+.menu-seccion {
+    margin: 0;
+
+    border-bottom: 1px solid
+        rgba(168, 138, 90, 0.25);
+}
+
+.menu-seccion + .menu-seccion {
+    margin-top: 12px;
+}
+
+
+/* ========================================
+   BOTONES DESPLEGABLES
+   ======================================== */
+
+.menu-desplegable {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+
+    padding: 18px 8px;
+
+    border: 0;
+
+    background: transparent;
+
+    color: var(--color-texto);
+
+    font-family: var(--fuente-elegante);
+
+    font-size: 1.5rem;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        color 0.25s ease,
+        padding-left 0.25s ease;
+}
+
+.menu-desplegable:hover {
+    color: var(--color-dorado);
+
+    padding-left: 14px;
+}
+
+
+/* ========================================
+   FLECHA
+   ======================================== */
+
+.menu-flecha {
+    color: var(--color-dorado);
+
+    font-family: Arial, sans-serif;
+
+    font-size: 1.4rem;
+
+    transition:
+        transform 0.35s ease;
+}
+
+
+/* Flecha cuando está abierto */
+
+.menu-desplegable.abierto .menu-flecha {
+    transform: rotate(180deg);
+}
+
+
+/* ========================================
+   CONTENIDO DESPLEGABLE
+   ======================================== */
+
+.menu-contenido {
+    max-height: 0;
+
+    overflow: hidden;
+
+    opacity: 0;
+
+    margin: 0;
+
+    transition:
+        max-height 0.6s ease,
+        opacity 0.35s ease;
+}
+
+.menu-contenido.abierto {
+    max-height: 2000px;
+
+    opacity: 1;
+}
+
+/* Estado abierto */
+
+.menu-contenido.abierto {
+    grid-template-rows: 1fr;
+
+    opacity: 1;
+}
+
+
+/* ========================================
+   PLATOS
+   ======================================== */
+
+.menu-contenido p {
+    margin: 0;
+
+    padding: 7px 20px 7px 25px;
+
+    color: var(--color-texto);
+
+    font-family: var(--fuente-principal);
+
+    font-size: 1rem;
+
+    line-height: 1.6;
+}
+
+
+/* ========================================
+   SUBSECCIONES
+   ======================================== */
+
+.menu-subseccion {
+    border-left: 1px solid
+        rgba(168, 138, 90, 0.25);
+
+    margin-left: 10px;
+
+    margin-bottom: 5px;
+}
+
+
+/* Segundo nivel */
+
+.menu-desplegable-secundario {
+    padding: 13px 15px;
+
+    font-size: 1.2rem;
+
+    color: var(--color-dorado);
+}
+
+
+/* Tercer nivel */
+
+.menu-desplegable-terciario {
+    padding: 11px 15px;
+
+    font-size: 1.05rem;
+
+    font-style: italic;
+}
+
+
+/* Contenido segundo nivel */
+
+.menu-contenido-secundario p {
+    padding-left: 30px;
+}
+
+
+/* Contenido tercer nivel */
+
+.menu-contenido-terciario p {
+    padding-left: 40px;
+
+    font-size: 0.95rem;
+}
+
+
+/* ========================================
+   BARRA LIBRE
+   ======================================== */
+
+.menu-barra-libre {
+    margin-top: 12px;
+
+    padding-top: 35px;
+
+    border-top: 1px solid
+        rgba(168, 138, 90, 0.3);
+
+    text-align: center;
+}
+
+.menu-barra-libre h2 {
+    margin: 0 0 18px;
+
+    color: var(--color-dorado);
+
+    font-family: var(--fuente-elegante);
+
+    font-size: 2rem;
+
+    font-weight: normal;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.08em;
+}
+
+.menu-barra-libre p {
+    margin: 8px 0;
+
+    color: var(--color-texto);
+
+    font-family: var(--fuente-principal);
+
+    font-size: 1rem;
+
+    line-height: 1.6;
+}
+
+
+/* ========================================
+   ENLACE A RECOMENDACIONES
+   ======================================== */
+
+.menu-barra-libre a {
+    color: var(--color-dorado);
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    border-bottom: 1px solid
+        var(--color-dorado-claro);
+
+    transition:
+        color 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.menu-barra-libre a:hover {
+    color: var(--color-texto);
+
+    border-color: var(--color-texto);
+}
+
+
+/* ========================================
+   MÓVIL
+   ======================================== */
+
+@media (max-width: 600px) {
+
+    #vista-menu {
+        width: 90%;
+
+        padding-top: 40px;
+    }
+
+    .menu-titulo {
+        margin-bottom: 35px;
+
+        gap: 10px;
+    }
+
+    .menu-adorno {
+        font-size: 1.3rem;
+    }
+
+    .menu-desplegable {
+        padding: 15px 4px;
+
+        font-size: 1.3rem;
+    }
+
+    .menu-desplegable-secundario {
+        font-size: 1.1rem;
+    }
+
+    .menu-desplegable-terciario {
+        font-size: 0.98rem;
+    }
+
+    .menu-contenido p {
+        font-size: 0.92rem;
+
+        padding-left: 18px;
+    }
+
+    .menu-contenido-terciario p {
+        padding-left: 25px;
+    }
+
+}
+
+.menu-seccion > .menu-desplegable {
+    min-height: 58px;
+}

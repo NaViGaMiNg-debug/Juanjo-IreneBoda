@@ -1584,6 +1584,73 @@ opcionesMenu.forEach(opcion => {
 });
 
 /* ========================================
+   ENLACE — RECOMENDACIONES
+   ======================================== */
+
+const enlaceRecomendaciones =
+    document.querySelector(
+        ".enlace-recomendaciones"
+    );
+
+
+if (enlaceRecomendaciones) {
+
+    enlaceRecomendaciones.addEventListener(
+        "click",
+        evento => {
+
+            evento.preventDefault();
+
+
+            /* Ocultar todas las vistas */
+
+            vistas.forEach(vista => {
+
+                vista.classList.remove("activa");
+
+            });
+
+
+            /* Mostrar recomendaciones */
+
+            const vistaRecomendaciones =
+                document.getElementById(
+                    "vista-recomendaciones"
+                );
+
+
+            if (!vistaRecomendaciones) {
+
+                console.error(
+                    "No se encontró la vista de recomendaciones"
+                );
+
+                return;
+
+            }
+
+
+            vistaRecomendaciones.classList.add(
+                "activa"
+            );
+
+
+            /* Volver arriba */
+
+            window.scrollTo({
+
+                top: 0,
+
+                behavior: "smooth"
+
+            });
+
+        }
+    );
+
+}
+
+/* ========================================
    REPRODUCTOR DE MÚSICA
    ======================================== */
 
@@ -2062,3 +2129,48 @@ botonMusica.addEventListener(
 
     }
 );
+
+/* ========================================
+   DESPLEGABLES — MENÚ
+   ======================================== */
+
+const botonesMenu =
+    document.querySelectorAll(
+        "#vista-menu .menu-desplegable"
+    );
+
+
+botonesMenu.forEach(boton => {
+
+    boton.addEventListener("click", () => {
+
+        const contenido =
+            boton.nextElementSibling;
+
+
+        /* ========================================
+           CERRAR SI YA ESTÁ ABIERTO
+           ======================================== */
+
+        if (boton.classList.contains("abierto")) {
+
+            boton.classList.remove("abierto");
+
+            contenido.classList.remove("abierto");
+
+            return;
+
+        }
+
+
+        /* ========================================
+           ABRIR
+           ======================================== */
+
+        boton.classList.add("abierto");
+
+        contenido.classList.add("abierto");
+
+    });
+
+});
