@@ -1928,36 +1928,33 @@ body {
 }
 
 /* ========================================
-   FIRMA — MÓVIL HORIZONTAL
+   MENÚ — MÓVIL HORIZONTAL
    ======================================== */
 
 @media (max-width: 600px) and (orientation: landscape) {
 
-    .menu-cabecera {
-        margin-bottom: 10px;
+    #menu-lateral {
+
+        height: 100vh;
+
+        overflow-y: auto;
+
+        padding-top: 25px;
+        padding-bottom: 20px;
+
     }
 
-    .menu-autor {
-        position: static;
 
-        width: 100%;
+    .menu-cabecera {
 
-        margin-bottom: 25px;
+        margin-bottom: 8px;
 
-        text-align: center;
-
-        font-family: var(--fuente-elegante);
-        font-size: 0.75rem;
-
-        letter-spacing: 0.08em;
-
-        color: var(--color-texto);
-
-        opacity: 0.65;
     }
 
     .menu-navegacion {
+
         margin-top: 0;
+
     }
 
 }
@@ -1972,9 +1969,9 @@ body {
 
     bottom: 24px;
 
-    left: 28px;
+    left: 0;
 
-    width: calc(100% - 56px);
+    width: 100%;
 
     text-align: center;
 
@@ -1989,6 +1986,43 @@ body {
     opacity: 0.65;
 
     pointer-events: none;
+}
+
+/* ========================================
+   FIRMA — MÓVIL HORIZONTAL
+   ======================================== */
+
+@media (orientation: landscape) and (max-height: 500px) {
+
+    #menu-lateral {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .menu-cabecera {
+        flex-shrink: 0;
+        margin-bottom: 5px;
+    }
+
+    .menu-autor {
+        position: static !important;
+        bottom: auto !important;
+        left: auto !important;
+
+        width: 100%;
+
+        margin: 0 0 15px 0;
+
+        text-align: center;
+
+        font-size: 0.75rem;
+    }
+
+    .menu-navegacion {
+        flex-shrink: 0;
+        margin: 0;
+    }
+
 }
 
 /* ========================================
