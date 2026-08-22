@@ -1933,17 +1933,31 @@ body {
 
 @media (max-width: 600px) and (orientation: landscape) {
 
+    .menu-cabecera {
+        margin-bottom: 10px;
+    }
+
     .menu-autor {
-        position: absolute;
-
-        top: 65px;
-        bottom: auto;
-
-        left: 0;
+        position: static;
 
         width: 100%;
 
+        margin-bottom: 25px;
+
         text-align: center;
+
+        font-family: var(--fuente-elegante);
+        font-size: 0.75rem;
+
+        letter-spacing: 0.08em;
+
+        color: var(--color-texto);
+
+        opacity: 0.65;
+    }
+
+    .menu-navegacion {
+        margin-top: 0;
     }
 
 }
