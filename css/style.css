@@ -2988,18 +2988,24 @@ body {
 
     .historia-visor-contenido {
 
-        width: 90vw;
+        width: 100vw;
 
-        height: 88vh;
+        height: 100vh;
 
         gap: 14px;
+
+        padding: 0;
+
+        box-sizing: border-box;
     }
 
     #historia-visor-foto {
 
-    max-width: 78vw;
+        max-width: 78vw;
 
-    max-height: 68vh;
+        max-height: 68vh;
+
+        object-fit: contain;
     }
 
     .historia-visor-frase {
@@ -3035,6 +3041,11 @@ body {
     .historia-visor-siguiente {
 
         right: 5px;
+    }
+
+    .historia-visor {
+        padding: 0;
+        box-sizing: border-box;
     }
 
 }
