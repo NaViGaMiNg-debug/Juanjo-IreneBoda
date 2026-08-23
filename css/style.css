@@ -2778,12 +2778,17 @@ body {
 
     inset: 0;
 
+    width: 100%;
+    max-width: 100vw;
+
     z-index: 2000;
 
     display: flex;
 
     align-items: center;
     justify-content: center;
+
+    overflow: hidden;
 
     background: rgba(35, 30, 25, 0.94);
 
@@ -3086,4 +3091,9 @@ body {
 
 .historia-flecha {
     pointer-events: auto !important;
+}
+
+html,
+body {
+    overflow-x: hidden;
 }
