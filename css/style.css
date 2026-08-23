@@ -2503,6 +2503,8 @@ body {
    ======================================== */
 
 .historia-carrusel {
+    position: relative;
+
     display: flex;
 
     align-items: center;
@@ -2523,27 +2525,27 @@ body {
 .historia-foto-contenedor {
     position: relative;
 
-    width: min(760px, 82vw);
+    width: 100%;
+
     height: min(480px, 55vh);
 
     display: flex;
 
     align-items: center;
 
-    overflow: hidden;
+    justify-content: center;
 
-    padding: 22px 0;
+    overflow: visible;
+
+    padding: 0;
 
     box-sizing: border-box;
 
-    background:
-        rgba(255, 255, 255, 0.25);
+    background: transparent;
 
-    border: 1px solid
-        rgba(168, 138, 90, 0.45);
+    border: none;
 
-    box-shadow:
-        0 10px 35px rgba(95, 85, 72, 0.10);
+    box-shadow: none;
 }
 
 
@@ -2560,11 +2562,15 @@ body {
 
     height: 100%;
 
+    gap: 24px;
+
     transform: translateX(0);
 
     transition:
         transform 0.65s
         cubic-bezier(0.22, 1, 0.36, 1);
+
+    will-change: transform;
 }
 
 
@@ -2588,16 +2594,10 @@ body {
 
     box-sizing: border-box;
 
-    opacity: 0.45;
+    opacity: 1;
 
-    transform: scale(0.88);
-
-    transition:
-        opacity 0.65s ease,
-        transform 0.65s
-        cubic-bezier(0.22, 1, 0.36, 1);
+    transform: scale(1);
 }
-
 
 /* FOTO CENTRAL */
 
@@ -2750,6 +2750,8 @@ body {
         max-height: 380px;
 
         border-radius: 6px;
+
+        overflow: visible;
     }
 
     .historia-flecha {
@@ -3035,4 +3037,42 @@ body {
         right: 5px;
     }
 
+}
+
+.historia-slide {
+    background: rgba(255, 255, 255, 0.25);
+
+    border: 1px solid
+        rgba(168, 138, 90, 0.45);
+
+    box-shadow:
+        0 10px 35px
+        rgba(95, 85, 72, 0.10);
+}
+
+.historia-flecha {
+    position: relative;
+
+    z-index: 20;
+
+    flex-shrink: 0;
+}
+
+.historia-flecha {
+    position: relative !important;
+    z-index: 9999 !important;
+}
+
+.historia-anterior {
+    position: relative !important;
+    z-index: 9999 !important;
+}
+
+.historia-siguiente {
+    position: relative !important;
+    z-index: 9999 !important;
+}
+
+.historia-flecha {
+    pointer-events: auto !important;
 }

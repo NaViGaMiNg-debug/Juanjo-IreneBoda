@@ -2269,7 +2269,7 @@ const historiaFotos =
 
 let historiaActual = 0;
 
-let historiaTemporizador;
+let historiaTemporizador = null;
 
 let historiaAnimando = false;
 
@@ -2322,45 +2322,39 @@ function actualizarTresFotos() {
     historiaContador.textContent =
         `${historiaActual + 1} / ${historiaFotos.length}`;
 
+}
+
+
+/* ========================================
+   DISTANCIA ENTRE DOS MARCOS
+   ======================================== */
+
+function obtenerAnchoHistoria() {
 
     const slides =
         historiaPista.querySelectorAll(
             ".historia-slide"
         );
 
-
-    slides.forEach(slide => {
-
-        slide.classList.remove(
-            "historia-slide-actual"
-        );
-
-    });
+    if (slides.length < 2) {
+        return 0;
+    }
 
 
-    slides[1].classList.add(
-        "historia-slide-actual"
-    );
+    const primero =
+        slides[0].getBoundingClientRect();
 
-}
+    const segundo =
+        slides[1].getBoundingClientRect();
 
 
-/* ========================================
-   OBTENER ANCHO DE UNA FOTO
-   ======================================== */
-
-function obtenerAnchoHistoria() {
-
-    return historiaPista
-        .querySelector(".historia-slide")
-        .getBoundingClientRect()
-        .width;
+    return segundo.left - primero.left;
 
 }
 
 
 /* ========================================
-   COLOCAR FOTO ACTUAL EN EL CENTRO
+   COLOCAR LA FOTO ACTUAL EN EL CENTRO
    ======================================== */
 
 function colocarHistoriaEnCentro() {
@@ -2393,15 +2387,6 @@ function siguienteHistoria() {
         obtenerAnchoHistoria();
 
 
-    /*
-
-       [ ANTERIOR ] [ ACTUAL ] [ SIGUIENTE ]
-                       ↓
-
-       Movemos una foto hacia la izquierda
-
-    */
-
     historiaPista.style.transform =
         `translateX(-${ancho * 2}px)`;
 
@@ -2416,7 +2401,7 @@ function siguienteHistoria() {
 
 
 /* ========================================
-   TERMINAR SIGUIENTE
+   FINALIZAR SIGUIENTE
    ======================================== */
 
 function finalizarSiguienteHistoria() {
@@ -2435,11 +2420,6 @@ function finalizarSiguienteHistoria() {
     colocarHistoriaEnCentro();
 
 
-    /*
-       Forzamos al navegador a aplicar
-       inmediatamente la posición central.
-    */
-
     historiaPista.offsetHeight;
 
 
@@ -2448,6 +2428,9 @@ function finalizarSiguienteHistoria() {
 
 
     historiaAnimando = false;
+
+
+    actualizarHistoriaVisorSiEstaAbierto();
 
 }
 
@@ -2466,13 +2449,6 @@ function anteriorHistoria() {
     historiaAnimando = true;
 
 
-    /*
-       [ ANTERIOR ] [ ACTUAL ] [ SIGUIENTE ]
-              ↓
-
-       Movemos una foto hacia la derecha.
-    */
-
     historiaPista.style.transform =
         "translateX(0)";
 
@@ -2487,7 +2463,7 @@ function anteriorHistoria() {
 
 
 /* ========================================
-   TERMINAR ANTERIOR
+   FINALIZAR ANTERIOR
    ======================================== */
 
 function finalizarAnteriorHistoria() {
@@ -2514,6 +2490,27 @@ function finalizarAnteriorHistoria() {
 
 
     historiaAnimando = false;
+
+
+    actualizarHistoriaVisorSiEstaAbierto();
+
+}
+
+
+/* ========================================
+   ACTUALIZAR VISOR SI ESTÁ ABIERTO
+   ======================================== */
+
+function actualizarHistoriaVisorSiEstaAbierto() {
+
+    if (
+        historiaVisor &&
+        historiaVisor.classList.contains("abierto")
+    ) {
+
+        actualizarHistoriaVisor();
+
+    }
 
 }
 
@@ -2546,6 +2543,11 @@ historiaSiguiente.addEventListener(
     "click",
     () => {
 
+        if (historiaAnimando) {
+            return;
+        }
+
+
         siguienteHistoria();
 
         reiniciarHistoriaTemporizador();
@@ -2561,6 +2563,11 @@ historiaSiguiente.addEventListener(
 historiaAnterior.addEventListener(
     "click",
     () => {
+
+        if (historiaAnimando) {
+            return;
+        }
+
 
         anteriorHistoria();
 
