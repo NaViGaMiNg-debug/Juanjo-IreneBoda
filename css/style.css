@@ -2631,7 +2631,7 @@ body {
    FLECHAS
    ======================================== */
 
-.historia-flecha {
+.historia-carrusel > .historia-flecha {
     display: flex;
 
     align-items: center;
@@ -3063,12 +3063,12 @@ body {
     z-index: 9999 !important;
 }
 
-.historia-anterior {
+.historia-carrusel > .historia-anterior {
     position: relative !important;
     z-index: 9999 !important;
 }
 
-.historia-siguiente {
+.historia-carrusel > .historia-siguiente {
     position: relative !important;
     z-index: 9999 !important;
 }

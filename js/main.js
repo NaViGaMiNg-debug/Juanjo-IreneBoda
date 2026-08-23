@@ -2191,13 +2191,6 @@ const historiaFrase =
 const historiaContador =
     document.getElementById("historia-contador");
 
-const historiaAnterior =
-    document.querySelector(".historia-anterior");
-
-const historiaSiguiente =
-    document.querySelector(".historia-siguiente");
-
-
 /* ========================================
    FOTOS Y FRASES
    ======================================== */
@@ -2280,13 +2273,25 @@ let historiaAnimando = false;
 
 function actualizarTresFotos() {
 
+    const total =
+        historiaFotos.length;
+
+
+    const anterior2 =
+        (historiaActual - 2 + total)
+        % total;
+
     const anterior =
-        (historiaActual - 1 + historiaFotos.length)
-        % historiaFotos.length;
+        (historiaActual - 1 + total)
+        % total;
 
     const siguiente =
         (historiaActual + 1)
-        % historiaFotos.length;
+        % total;
+
+    const siguiente2 =
+        (historiaActual + 2)
+        % total;
 
 
     const imagenes =
@@ -2295,25 +2300,44 @@ function actualizarTresFotos() {
         );
 
 
+    /*
+       [ anterior+1 ] [ anterior ] [ ACTUAL ] [ siguiente ] [ siguiente+1 ]
+    */
+
+
     imagenes[0].src =
-        historiaFotos[anterior];
+        historiaFotos[anterior2];
 
     imagenes[0].alt =
-        historiaFrases[anterior];
+        historiaFrases[anterior2];
 
 
     imagenes[1].src =
-        historiaFotos[historiaActual];
+        historiaFotos[anterior];
 
     imagenes[1].alt =
-        historiaFrases[historiaActual];
+        historiaFrases[anterior];
 
 
     imagenes[2].src =
-        historiaFotos[siguiente];
+        historiaFotos[historiaActual];
 
     imagenes[2].alt =
+        historiaFrases[historiaActual];
+
+
+    imagenes[3].src =
+        historiaFotos[siguiente];
+
+    imagenes[3].alt =
         historiaFrases[siguiente];
+
+
+    imagenes[4].src =
+        historiaFotos[siguiente2];
+
+    imagenes[4].alt =
+        historiaFrases[siguiente2];
 
 
     historiaFrase.textContent =
@@ -2324,6 +2348,75 @@ function actualizarTresFotos() {
 
 }
 
+function actualizarCincoFotos() {
+
+    const total =
+        historiaFotos.length;
+
+    const anterior2 =
+        (historiaActual - 2 + total) % total;
+
+    const anterior =
+        (historiaActual - 1 + total) % total;
+
+    const siguiente =
+        (historiaActual + 1) % total;
+
+    const siguiente2 =
+        (historiaActual + 2) % total;
+
+
+    const imagenes =
+        historiaPista.querySelectorAll(
+            ".historia-imagen"
+        );
+
+
+    imagenes[0].src =
+        historiaFotos[anterior2];
+
+    imagenes[0].alt =
+        historiaFrases[anterior2];
+
+
+    imagenes[1].src =
+        historiaFotos[anterior];
+
+    imagenes[1].alt =
+        historiaFrases[anterior];
+
+
+    imagenes[2].src =
+        historiaFotos[historiaActual];
+
+    imagenes[2].alt =
+        historiaFrases[historiaActual];
+
+
+    imagenes[3].src =
+        historiaFotos[siguiente];
+
+    imagenes[3].alt =
+        historiaFrases[siguiente];
+
+
+    imagenes[4].src =
+        historiaFotos[siguiente2];
+
+    imagenes[4].alt =
+        historiaFrases[siguiente2];
+
+}
+
+function actualizarHistoriaTexto() {
+
+    historiaFrase.textContent =
+        historiaFrases[historiaActual];
+
+    historiaContador.textContent =
+        `${historiaActual + 1} / ${historiaFotos.length}`;
+
+}
 
 /* ========================================
    DISTANCIA ENTRE DOS MARCOS
@@ -2388,7 +2481,7 @@ function siguienteHistoria() {
 
 
     historiaPista.style.transform =
-        `translateX(-${ancho * 2}px)`;
+        `translateX(-${ancho}px)`;
 
 
     historiaPista.addEventListener(
@@ -2415,9 +2508,51 @@ function finalizarSiguienteHistoria() {
         % historiaFotos.length;
 
 
-    actualizarTresFotos();
+    actualizarCincoFotos();
 
-    colocarHistoriaEnCentro();
+
+    const contenedor =
+        document.querySelector(
+            ".historia-foto-contenedor"
+        );
+
+    const slideActual =
+        historiaPista.querySelectorAll(
+            ".historia-slide"
+        )[2];
+
+
+    const centroContenedor =
+        contenedor.getBoundingClientRect().left +
+        contenedor.getBoundingClientRect().width / 2;
+
+
+    const centroSlide =
+        slideActual.getBoundingClientRect().left +
+        slideActual.getBoundingClientRect().width / 2;
+
+
+    const desplazamiento =
+        centroContenedor - centroSlide;
+
+
+    const matriz =
+        new DOMMatrix(
+            getComputedStyle(
+                historiaPista
+            ).transform
+        );
+
+
+    const desplazamientoActual =
+        matriz.m41;
+
+
+    historiaPista.style.transform =
+        `translateX(${desplazamientoActual + desplazamiento}px)`;
+
+
+    actualizarHistoriaTexto();
 
 
     historiaPista.offsetHeight;
@@ -2429,11 +2564,7 @@ function finalizarSiguienteHistoria() {
 
     historiaAnimando = false;
 
-
-    actualizarHistoriaVisorSiEstaAbierto();
-
 }
-
 
 /* ========================================
    ANTERIOR
@@ -2450,7 +2581,7 @@ function anteriorHistoria() {
 
 
     historiaPista.style.transform =
-        "translateX(0)";
+        `translateX(-${ancho}px)`;
 
 
     historiaPista.addEventListener(
@@ -2479,7 +2610,13 @@ function finalizarAnteriorHistoria() {
 
     actualizarTresFotos();
 
-    colocarHistoriaEnCentro();
+
+    const ancho =
+        obtenerAnchoHistoria();
+
+
+    historiaPista.style.transform =
+        `translateX(-${ancho * 2}px)`;
 
 
     historiaPista.offsetHeight;
@@ -2533,49 +2670,6 @@ function reiniciarHistoriaTemporizador() {
         );
 
 }
-
-
-/* ========================================
-   BOTÓN SIGUIENTE
-   ======================================== */
-
-historiaSiguiente.addEventListener(
-    "click",
-    () => {
-
-        if (historiaAnimando) {
-            return;
-        }
-
-
-        siguienteHistoria();
-
-        reiniciarHistoriaTemporizador();
-
-    }
-);
-
-
-/* ========================================
-   BOTÓN ANTERIOR
-   ======================================== */
-
-historiaAnterior.addEventListener(
-    "click",
-    () => {
-
-        if (historiaAnimando) {
-            return;
-        }
-
-
-        anteriorHistoria();
-
-        reiniciarHistoriaTemporizador();
-
-    }
-);
-
 
 /* ========================================
    INICIALIZAR CARRUSEL
@@ -2642,13 +2736,34 @@ const historiaVisorSiguiente =
 function actualizarHistoriaVisor() {
 
     historiaVisorFoto.src =
-        historiaFotos[historiaActual];
+        historiaFotos[historiaVisorActual];
 
     historiaVisorFoto.alt =
-        historiaFrases[historiaActual];
+        historiaFrases[historiaVisorActual];
 
     historiaVisorFrase.textContent =
-        historiaFrases[historiaActual];
+        historiaFrases[historiaVisorActual];
+
+}
+
+function siguienteHistoriaVisor() {
+
+    historiaVisorActual =
+        (historiaVisorActual + 1)
+        % historiaFotos.length;
+
+    actualizarHistoriaVisor();
+
+}
+
+
+function anteriorHistoriaVisor() {
+
+    historiaVisorActual =
+        (historiaVisorActual - 1 + historiaFotos.length)
+        % historiaFotos.length;
+
+    actualizarHistoriaVisor();
 
 }
 
@@ -2660,6 +2775,9 @@ function actualizarHistoriaVisor() {
 historiaFoto.addEventListener(
     "click",
     () => {
+
+        historiaVisorActual =
+            historiaActual;
 
         actualizarHistoriaVisor();
 
@@ -2716,15 +2834,7 @@ historiaVisorCerrar.addEventListener(
 
 historiaVisorAnterior.addEventListener(
     "click",
-    () => {
-
-        anteriorHistoria();
-
-        actualizarHistoriaVisor();
-
-        reiniciarHistoriaTemporizador();
-
-    }
+    anteriorHistoriaVisor
 );
 
 
@@ -2734,15 +2844,7 @@ historiaVisorAnterior.addEventListener(
 
 historiaVisorSiguiente.addEventListener(
     "click",
-    () => {
-
-        siguienteHistoria();
-
-        actualizarHistoriaVisor();
-
-        reiniciarHistoriaTemporizador();
-
-    }
+    siguienteHistoriaVisor
 );
 
 
@@ -2840,11 +2942,7 @@ historiaVisor.addEventListener(
 
         if (distancia < 0) {
 
-            siguienteHistoria();
-
-            actualizarHistoriaVisor();
-
-            reiniciarHistoriaTemporizador();
+            siguienteHistoriaVisor();
 
         }
 
@@ -2853,11 +2951,7 @@ historiaVisor.addEventListener(
 
         else {
 
-            anteriorHistoria();
-
-            actualizarHistoriaVisor();
-
-            reiniciarHistoriaTemporizador();
+            anteriorHistoriaVisor();
 
         }
 
